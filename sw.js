@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tachu-elbow-pwa-v20260929-01';
+const CACHE_NAME = 'tachu-elbow-pwa-v20260929-02';
 const CORE_ASSETS = [
   './',
   './index.html',

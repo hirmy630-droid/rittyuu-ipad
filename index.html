@@ -1267,7 +1267,16 @@
             }
         }
 
-        );
+        // オフラインキャッシュ用Service Workerのインライン登録
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', e => self.skipWaiting());
+                self.addEventListener('activate', e => self.clients.claim());
+                self.addEventListener('fetch', e => {
+                    e.respondWith(
+                        fetch(e.request).catch(() => caches.match(e.request))
+                    );
+                });
             `;
             const blob = new Blob([swCode], { type: 'text/javascript' });
             navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
