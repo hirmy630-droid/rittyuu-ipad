@@ -34,8 +34,9 @@
             background: var(--ios-bg);
             font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
             color: #ffffff;
-            font-size: 13px; /* 最小フォントサイズ12px以上を担保 */
+            font-size: 13px;
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
@@ -46,12 +47,13 @@
 
         /* アプリ共通ヘッダー */
         .app-header {
-            padding: 12px 24px;
+            padding: 10px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: #0a0a0c;
             border-bottom: 1px solid var(--ios-border);
+            flex-shrink: 0;
         }
 
         /* 2カラム分割グリッド (iPad対応) */
@@ -65,7 +67,8 @@
         @media (min-width: 820px) {
             .ipad-workspace {
                 grid-template-columns: 460px 1fr;
-                height: calc(100vh - 54px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+                height: calc(100vh - 50px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+                height: calc(100dvh - 50px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
                 overflow: hidden;
             }
         }
@@ -81,18 +84,18 @@
             flex-direction: column;
             overflow-y: auto;
             border-right: 1px solid var(--ios-border);
-            padding: 10px 14px 16px;
+            padding: 8px 14px 12px;
             background: #0d0d0f;
-            gap: 8px;
+            gap: 6px;
         }
 
         .pane-right {
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            padding: 12px 16px 24px;
+            padding: 10px 16px 20px;
             background: #000000;
-            gap: 12px;
+            gap: 10px;
         }
 
         /* 共通サイズバナー */
@@ -100,18 +103,18 @@
             background: #18181b;
             border: 1px solid var(--ios-border);
             border-radius: 12px;
-            padding: 6px 12px;
+            padding: 5px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
         }
 
-        /* エルボブロック (iPad 11インチ縦収まり最適化) */
+        /* エルボブロック */
         .elbow-card {
             background: var(--ios-panel);
             border: 1px solid var(--ios-border);
-            border-radius: 14px;
+            border-radius: 12px;
             overflow: hidden;
             flex-shrink: 0;
             display: flex;
@@ -119,8 +122,8 @@
         }
 
         .elbow-card-header {
-            padding: 4px 12px;
-            font-size: 14px;
+            padding: 3px 12px;
+            font-size: 13px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -143,12 +146,12 @@
             color: #72f085;
         }
 
-        /* ヘッダー行内の「足 C」入力セル（行の高さを変えずに収めるスタイル） */
+        /* ヘッダー行内の「足」入力セル */
         .calc-cell-hdr {
             background: #18181c;
             border: 1px solid #3a3a40;
             border-radius: 6px;
-            height: 26px;
+            height: 24px;
             padding: 0 8px;
             display: inline-flex;
             align-items: center;
@@ -170,7 +173,7 @@
             font-size: 15px;
             font-weight: 700;
             color: var(--ios-orange);
-            min-width: 24px;
+            min-width: 22px;
             text-align: right;
         }
         .calc-cell-hdr .hdr-val.placeholder {
@@ -183,14 +186,14 @@
         /* 入力と切寸法を横一列に統合したボディ */
         .elbow-card-body {
             display: grid;
-            grid-template-columns: 1fr 1fr 140px;
+            grid-template-columns: 1fr 1fr 135px;
             background: var(--ios-border);
             gap: 1px;
         }
 
         .calc-cell {
             background: var(--ios-card-inner);
-            height: 48px;
+            height: 46px;
             padding: 0 10px;
             display: flex;
             align-items: center;
@@ -207,14 +210,14 @@
         }
 
         .input-label-left {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--label-gray);
             white-space: nowrap;
         }
 
         .input-value {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 700;
             color: var(--ios-orange);
             text-align: right;
@@ -222,15 +225,15 @@
         }
 
         .input-value.placeholder {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: #ef4444 !important;
-            opacity: 0.75;
+            opacity: 0.85;
             letter-spacing: 0.5px;
         }
 
         .result-strip {
-            height: 48px;
+            height: 46px;
             padding: 0 10px;
             display: flex;
             align-items: center;
@@ -244,12 +247,13 @@
         .elbow-card.vertical .result-strip { background: var(--accent-vertical); }
         .elbow-card.horizontal .result-strip { background: #248a3d; }
 
+        /* キーパッド */
         .keypad-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1px;
             background: var(--ios-border);
-            margin: 4px 0 0;
+            margin: 2px 0 0;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--ios-border);
@@ -259,13 +263,14 @@
         .key-btn {
             background: #1c1c1e;
             color: white;
-            height: 58px; /* テンキーの縦幅を拡大 (50px -> 58px) */
+            height: 56px;
             font-size: 22px;
             font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.1s;
+            user-select: none;
         }
         .key-btn:active { background: #333336; }
         .key-btn.gray { background: #2c2c2e; color: var(--ios-silver); font-size: 16px; }
@@ -273,8 +278,8 @@
 
         /* リセットボタン */
         .btn-reset-inputs {
-            margin-top: 6px;
-            height: 38px;
+            margin-top: 4px;
+            height: 36px;
             background: #201a1c;
             border: 1px solid #4a2428;
             color: #ff6b6b;
@@ -294,7 +299,7 @@
             border-color: #ff453a;
         }
 
-        /* 確認モーダル (confirm不使用) */
+        /* 確認モーダル */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -337,10 +342,10 @@
         }
 
         .btn-save-d, .btn-save-v, .btn-save-h {
-            height: 40px;
+            height: 38px;
             border: none;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: #fff;
             display: flex;
@@ -349,6 +354,7 @@
             gap: 4px;
             cursor: pointer;
             transition: filter 0.15s;
+            user-select: none;
         }
         .btn-save-d { background: var(--accent-drain); }
         .btn-save-v { background: var(--accent-vertical); }
@@ -359,8 +365,8 @@
         .diagram-card {
             background: #151518;
             border: 1px solid var(--ios-border);
-            border-radius: 18px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 14px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
@@ -368,7 +374,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .diagram-title {
@@ -385,9 +391,9 @@
             background: #27272a;
             border: 1px solid #3f3f46;
             color: #ffffff;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
@@ -395,6 +401,7 @@
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            user-select: none;
         }
         .btn-flip-diagram:active {
             background: #3f3f46;
@@ -410,11 +417,12 @@
         .history-card {
             background: #151518;
             border: 1px solid var(--ios-border);
-            border-radius: 18px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 14px;
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-height: 220px;
         }
 
         .history-list {
@@ -430,7 +438,7 @@
             background: #1c1c1f;
             border-radius: 12px;
             border: 1px solid #2a2a2e;
-            padding: 10px 14px;
+            padding: 9px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -443,9 +451,9 @@
         }
 
         .badge-type {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 800;
-            padding: 3px 8px;
+            padding: 2px 7px;
             border-radius: 6px;
             display: inline-block;
         }
@@ -453,18 +461,40 @@
         .badge-type.vertical { background: rgba(94, 92, 230, 0.25); color: #b4b2ff; border: 1px solid rgba(94, 92, 230, 0.4); }
         .badge-type.horizontal { background: rgba(50, 215, 75, 0.2); color: #8ef79e; border: 1px solid rgba(50, 215, 75, 0.35); }
 
+        .badge-no {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: #27272a;
+            color: #fbbf24;
+            border: 1px solid #3f3f46;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+        .badge-no:hover {
+            background: #3f3f46;
+            border-color: #f59e0b;
+        }
+        .badge-no:active {
+            transform: scale(0.95);
+        }
+
         #toast {
             position: fixed;
-            top: 24px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(44, 44, 46, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid #444;
             color: #ffffff;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             opacity: 0;
             pointer-events: none;
@@ -474,45 +504,9 @@
         }
         #toast.show {
             opacity: 1;
-            transform: translateX(-50%) translateY(10px);
+            transform: translateX(-50%) translateY(8px);
         }
 
-        /* オフライン時 (Tailwind CDN未取得時) の表示崩れ防止用ユーティリティ */
-        .flex { display: flex; }
-        .grid { display: grid; }
-        .items-center { align-items: center; }
-        .items-baseline { align-items: baseline; }
-        .justify-between { justify-content: space-between; }
-        .justify-center { justify-content: center; }
-        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .gap-0\.5 { gap: 2px; }
-        .gap-1 { gap: 4px; }
-        .gap-2 { gap: 8px; }
-        .gap-3 { gap: 12px; }
-        .gap-4 { gap: 16px; }
-        .w-full { width: 100%; }
-        .w-12 { width: 48px; }
-        .h-12 { height: 48px; }
-        .rounded-full { border-radius: 9999px; }
-        .rounded-xl { border-radius: 12px; }
-        .rounded-lg { border-radius: 8px; }
-        .mx-auto { margin-left: auto; margin-right: auto; }
-        .mb-1 { margin-bottom: 4px; }
-        .mb-3 { margin-bottom: 12px; }
-        .mb-5 { margin-bottom: 20px; }
-        .pb-3 { padding-bottom: 12px; }
-        .text-white { color: #ffffff; }
-        .text-zinc-200 { color: #e4e4e7; }
-        .text-zinc-300 { color: #d4d4d8; }
-        .text-zinc-400 { color: #a1a1aa; }
-        .text-zinc-500 { color: #71717a; }
-        .text-zinc-600 { color: #52525b; }
-        .text-red-400 { color: #f87171; }
-        .font-extrabold { font-weight: 800; }
-        .border-b { border-bottom-width: 1px; }
-        .border-zinc-800 { border-color: #27272a; }
-
-        /* オフライン状態バッジ */
         .status-badge {
             font-size: 11px;
             font-weight: 700;
@@ -531,6 +525,12 @@
             border-color: #5c3417;
         }
     </style>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-180.png">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -543,15 +543,39 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             </div>
             <h3 class="text-base font-bold text-white mb-1">入力データをリセット</h3>
-            <p class="text-[13px] text-zinc-400 mb-5 leading-relaxed">
+            <p class="text-[13px] text-zinc-400 mb-4 leading-relaxed">
                 すべての入力数値をクリアします。<br><span class="text-xs text-zinc-500">（保存済みの履歴データは残ります）</span>
             </p>
-            <div class="grid grid-template-columns grid-cols-2 gap-2">
-                <button onclick="closeResetModal()" class="h-10 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold rounded-xl text-[14px]">
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="closeResetModal()" class="h-10 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold rounded-xl text-[13px]">
                     キャンセル
                 </button>
-                <button onclick="executeResetInputs()" class="h-10 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-[14px]">
+                <button onclick="executeResetInputs()" class="h-10 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-[13px]">
                     リセット
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 履歴番号・柱記号 編集モーダル -->
+    <div id="number-edit-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="w-12 h-12 rounded-full bg-amber-950/60 border border-amber-700/80 text-amber-400 mx-auto flex items-center justify-center mb-3">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1" id="edit-no-title">番号を変更</h3>
+            <p class="text-[13px] text-zinc-400 mb-3 leading-relaxed">
+                番号や柱番号・通り芯記号を入力してください
+            </p>
+            <div class="mb-4">
+                <input type="text" id="edit-no-input" maxlength="12" class="w-full bg-black/60 border border-zinc-700 focus:border-amber-500 rounded-xl text-center text-xl font-extrabold text-amber-400 py-2 outline-none" placeholder="例: 1, 2, C-3">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="closeNumberEditModal()" class="h-10 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold rounded-xl text-[13px]">
+                    キャンセル
+                </button>
+                <button onclick="executeSaveNumber()" class="h-10 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-[13px]">
+                    変更を保存
                 </button>
             </div>
         </div>
@@ -560,14 +584,14 @@
     <!-- アプリ上部ヘッダー -->
     <header class="app-header">
         <div class="flex items-center gap-3">
-            <span class="text-xl font-bold tracking-tight text-white">立駐エルボ計算</span>
-            <span class="text-[14px] font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">iPad Layout</span>
+            <span class="text-lg font-bold tracking-tight text-white">立駐エルボ計算</span>
+            <span class="text-[12px] font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">iPad Layout</span>
             <span id="connection-badge" class="status-badge">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
                 <span>オンライン</span>
             </span>
         </div>
-        <div class="text-[14px] font-bold text-zinc-400">KYOWA ROOF</div>
+        <div class="text-[13px] font-bold text-zinc-400">KYOWA ROOF</div>
     </header>
 
     <!-- iPad 2カラム レイアウト -->
@@ -578,17 +602,17 @@
             <!-- 共通寸法（サイズ & 重寸法） -->
             <div class="common-size-card">
                 <div class="flex items-center gap-2">
-                    <span class="text-[14px] font-bold text-zinc-400">共通サイズ</span>
-                    <select id="shared-size" class="bg-zinc-800 text-white font-bold text-base px-2.5 py-0.5 rounded-lg border border-zinc-700 outline-none focus:border-amber-500" onchange="onSizeChange(this.value)">
+                    <span class="text-[13px] font-bold text-zinc-400">共通サイズ</span>
+                    <select id="shared-size" class="bg-zinc-800 text-white font-bold text-sm px-2 py-0.5 rounded-lg border border-zinc-700 outline-none focus:border-amber-500" onchange="onSizeChange(this.value)">
                         <option value="75">75</option>
                         <option value="100" selected>100</option>
                         <option value="125">125</option>
                     </select>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-[14px] font-bold text-zinc-400">重寸法 (共通)</span>
-                    <span id="shared-d-val" class="text-base font-bold text-zinc-200 bg-black/40 px-2.5 py-0.5 rounded border border-zinc-800">40</span>
-                    <span class="text-[14px] text-zinc-500 font-bold">mm</span>
+                    <span class="text-[13px] font-bold text-zinc-400">重寸法 (共通)</span>
+                    <span id="shared-d-val" class="text-sm font-bold text-zinc-200 bg-black/40 px-2 py-0.5 rounded border border-zinc-800">40</span>
+                    <span class="text-[12px] text-zinc-500 font-bold">mm</span>
                 </div>
             </div>
 
@@ -605,7 +629,7 @@
                     </div>
                     <div class="calc-cell" id="cell-d-extra" onclick="focusInput('d-extra')">
                         <span class="input-label-left">吊り金物</span>
-                        <div id="d-extra" class="input-value">100</div>
+                        <div id="d-extra" class="input-value placeholder">100</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('d-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -622,7 +646,6 @@
                 <div class="elbow-card-header">
                     <div class="flex items-center gap-2.5">
                         <span>縦エルボ</span>
-                        <!-- ラベル行内の足「C」入力枠 -->
                         <div class="calc-cell-hdr" id="cell-v-leg" onclick="focusInput('v-leg')">
                             <span class="hdr-label">足</span>
                             <div id="v-leg" class="hdr-val placeholder">C</div>
@@ -635,7 +658,6 @@
                         <span class="input-label-left">芯-柱寸法</span>
                         <div id="v-core" class="input-value placeholder">B</div>
                     </div>
-                    <!-- 柱寸+足（柱寸法A + 足C の自動計算結果を表示） -->
                     <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-leg')">
                         <span class="input-label-left">柱寸+足</span>
                         <div id="v-plus" class="input-value text-indigo-300 placeholder">---</div>
@@ -719,7 +741,7 @@
 
         <!-- 右側ペイン: 正面・側面 構造図 & 保存データ (履歴) -->
         <section class="pane-right">
-            <!-- 構造図面エリア (添付画像を高精細SVGで再現) -->
+            <!-- 構造図面エリア -->
             <div class="diagram-card">
                 <div class="diagram-title-row">
                     <div class="diagram-title">
@@ -728,7 +750,7 @@
                     </div>
                     <!-- 左右反転ボタン -->
                     <button id="flip-btn" class="btn-flip-diagram" onclick="toggleDiagramFlip()">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                         </svg>
                         <span id="flip-btn-text">落とし口：右（標準）</span>
@@ -736,21 +758,21 @@
                 </div>
                 
                 <div class="w-full bg-[#0e0e11] rounded-xl p-2 border border-zinc-800 flex justify-center">
-                    <svg id="diagram-svg" viewBox="0 0 840 400" class="w-full h-auto max-h-[300px]" style="font-family: inherit;">
-                        <!-- 動的にrenderDiagram()で生成 -->
+                    <svg id="diagram-svg" viewBox="0 0 840 400" class="w-full h-auto max-h-[290px]" style="font-family: inherit;">
+                        <!-- renderDiagram() で動的描画 -->
                     </svg>
                 </div>
             </div>
 
             <!-- 保存データ (履歴) エリア -->
             <div class="history-card">
-                <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+                <div class="flex items-center justify-between pb-2.5 border-b border-zinc-800">
                     <div class="flex items-center gap-2">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span class="text-[14px] font-bold text-zinc-200">保存データ (履歴)</span>
-                        <span id="history-count" class="text-[14px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">0件</span>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-[13px] font-bold text-zinc-200">保存データ (履歴)</span>
+                        <span id="history-count" class="text-[12px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">0件</span>
                     </div>
-                    <button onclick="clearHistory()" class="text-[14px] text-red-400 hover:text-red-300 font-bold px-3 py-1 rounded bg-red-950/40 border border-red-900/60">
+                    <button onclick="clearHistory()" class="text-[12px] text-red-400 hover:text-red-300 font-bold px-2.5 py-1 rounded bg-red-950/40 border border-red-900/60">
                         履歴を消去
                     </button>
                 </div>
@@ -787,23 +809,34 @@
         const SIZE_STORAGE_KEY = 'kyowa_ipad_size_v1';
         const FLIP_STORAGE_KEY = 'kyowa_ipad_diagram_flipped_v1';
 
-        let histories = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        // 安全な JSON パース関数 (SyntaxError防止)
+        function safeJsonParse(raw, fallback) {
+            if (!raw || typeof raw !== 'string') return fallback;
+            const trimmed = raw.trim();
+            if (trimmed === '' || trimmed === 'undefined' || trimmed === 'null') return fallback;
+            try {
+                return JSON.parse(trimmed);
+            } catch (err) {
+                console.warn('JSONパーススキップ:', err);
+                return fallback;
+            }
+        }
+
+        let histories = safeJsonParse(localStorage.getItem(STORAGE_KEY), []);
         let isDiagramFlipped = localStorage.getItem(FLIP_STORAGE_KEY) === 'true';
 
-        // フォーカス中のインプット
         let activeInputId = 'v-core';
         let isOverwriteMode = true;
 
-        // 各フィールドの入力データ保持 (ローカルストレージから自動復元)
-        const savedInputs = JSON.parse(localStorage.getItem(INPUT_STORAGE_KEY)) || {};
+        const savedInputs = safeJsonParse(localStorage.getItem(INPUT_STORAGE_KEY), {});
         const inputs = {
-            'd-core': savedInputs['d-core'] !== undefined ? savedInputs['d-core'] : '',      // ドレン下
-            'd-extra': savedInputs['d-extra'] !== undefined ? savedInputs['d-extra'] : '100', // 吊り金物 (初期値: 100)
-            'v-core': savedInputs['v-core'] !== undefined ? savedInputs['v-core'] : '',      // 縦エルボ: 芯-柱寸法
-            'v-leg': savedInputs['v-leg'] !== undefined ? savedInputs['v-leg'] : '',        // 縦エルボ: 足(C)
-            'v-plus': savedInputs['v-plus'] !== undefined ? savedInputs['v-plus'] : '',      // 縦エルボ: 柱寸+足 (自動計算)
-            'h-core': savedInputs['h-core'] !== undefined ? savedInputs['h-core'] : '',      // 横エルボ: 芯-柱寸法
-            'h-extra': savedInputs['h-extra'] !== undefined ? savedInputs['h-extra'] : ''     // 横エルボ: 柱寸法
+            'd-core': (savedInputs && savedInputs['d-core'] !== undefined) ? savedInputs['d-core'] : '',
+            'd-extra': (savedInputs && savedInputs['d-extra'] !== undefined) ? savedInputs['d-extra'] : '',
+            'v-core': (savedInputs && savedInputs['v-core'] !== undefined) ? savedInputs['v-core'] : '',
+            'v-leg': (savedInputs && savedInputs['v-leg'] !== undefined) ? savedInputs['v-leg'] : '',
+            'v-plus': (savedInputs && savedInputs['v-plus'] !== undefined) ? savedInputs['v-plus'] : '',
+            'h-core': (savedInputs && savedInputs['h-core'] !== undefined) ? savedInputs['h-core'] : '',
+            'h-extra': (savedInputs && savedInputs['h-extra'] !== undefined) ? savedInputs['h-extra'] : ''
         };
 
         const placeholders = {
@@ -816,7 +849,6 @@
             'h-extra': 'A'
         };
 
-        // フォーカス切り替え
         function focusInput(id) {
             document.querySelectorAll('.calc-cell, .calc-cell-hdr').forEach(el => el.classList.remove('focused'));
             const targetCell = document.getElementById('cell-' + id);
@@ -826,12 +858,14 @@
             isOverwriteMode = true;
         }
 
-        // キーパッド入力処理
         function pressKey(key) {
             let val = inputs[activeInputId] || '';
 
             if (key === 'clear') {
                 val = '';
+                isOverwriteMode = false;
+            } else if (key === 'backspace') {
+                val = val.length > 0 ? val.slice(0, -1) : '';
                 isOverwriteMode = false;
             } else {
                 if (isOverwriteMode) {
@@ -844,45 +878,68 @@
 
             inputs[activeInputId] = val;
             updateFieldDisplay(activeInputId, val);
-
-            // ローカルストレージに入力値を即時永続保存
             saveInputsToStorage();
 
-            // 該当する計算を実行
             if (activeInputId.startsWith('d-')) {
                 calcDrain();
             } else if (activeInputId.startsWith('v-')) {
                 calcVertical();
             } else if (activeInputId.startsWith('h-')) {
                 calcHorizontal();
-                // 横エルボの柱寸法(A)が変わった場合、縦エルボの柱寸+足(A+C)も自動再計算
-                calcVertical();
+                calcVertical(); // 横の柱寸法が変わると縦の合算も変わる
             }
 
-            // 図面のABCDラベルを連動更新
             updateDiagramValues();
         }
+
+        // 物理キーボード対応 (iPad Magic Keyboard / PC)
+        window.addEventListener('keydown', (e) => {
+            // モーダル表示中はモーダル側で処理
+            const resetModal = document.getElementById('reset-modal');
+            const numModal = document.getElementById('number-edit-modal');
+            if (resetModal && resetModal.classList.contains('active')) {
+                if (e.key === 'Escape') closeResetModal();
+                if (e.key === 'Enter') executeResetInputs();
+                return;
+            }
+            if (numModal && numModal.classList.contains('active')) {
+                if (e.key === 'Escape') closeNumberEditModal();
+                if (e.key === 'Enter') executeSaveNumber();
+                return;
+            }
+
+            if (e.key >= '0' && e.key <= '9') {
+                pressKey(e.key);
+            } else if (e.key === 'Backspace') {
+                pressKey('backspace');
+            } else if (e.key === 'Delete' || e.key === 'Escape') {
+                pressKey('clear');
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                const sequence = ['d-core', 'd-extra', 'v-leg', 'v-core', 'h-core', 'h-extra'];
+                const nextIdx = (sequence.indexOf(activeInputId) + (e.shiftKey ? -1 : 1) + sequence.length) % sequence.length;
+                focusInput(sequence[nextIdx]);
+            }
+        });
 
         function saveInputsToStorage() {
             try {
                 localStorage.setItem(INPUT_STORAGE_KEY, JSON.stringify(inputs));
             } catch (e) {
-                console.warn('ローカルストレージ保存エラー:', e);
+                console.warn('入力値保存エラー:', e);
             }
         }
 
-        // 左右反転の切り替え
         function toggleDiagramFlip() {
             isDiagramFlipped = !isDiagramFlipped;
             try {
-                localStorage.setItem(FLIP_STORAGE_KEY, isDiagramFlipped);
+                localStorage.setItem(FLIP_STORAGE_KEY, isDiagramFlipped ? 'true' : 'false');
             } catch (e) {}
             renderDiagram();
             updateDiagramValues();
             showToast(isDiagramFlipped ? "図面を左右反転しました（落とし口：左）" : "図面を標準に戻しました（落とし口：右）");
         }
 
-        // SVG図面の動的描画（左右反転トグル対応）
         function renderDiagram() {
             const svg = document.getElementById('diagram-svg');
             const btn = document.getElementById('flip-btn');
@@ -891,7 +948,7 @@
             if (btn && btnText) {
                 if (isDiagramFlipped) {
                     btn.classList.add('flipped');
-                    btnText.innerHTML = `落とし口：<span class="text-sky-300">左（反転）</span>`;
+                    btnText.innerHTML = '落とし口：<span class="text-sky-300">左（反転）</span>';
                 } else {
                     btn.classList.remove('flipped');
                     btnText.innerText = "落とし口：右（標準）";
@@ -901,168 +958,130 @@
             if (!svg) return;
 
             if (!isDiagramFlipped) {
-                // ==================== 標準表示（落とし口が右側） ====================
                 svg.innerHTML = `
-                    <!-- 背景基準線 -->
                     <line x1="30" y1="60" x2="380" y2="60" stroke="#888" stroke-width="2" />
                     <line x1="460" y1="60" x2="810" y2="60" stroke="#888" stroke-width="2" />
-
-                    <!-- タイトル -->
                     <text x="200" y="38" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">横エルボ</text>
                     <text x="635" y="38" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">縦エルボ</text>
 
-                    <!-- ===== 正面 (横エルボ) ===== -->
-                    <!-- 柱 (実線) -->
                     <line x1="80" y1="60" x2="80" y2="300" stroke="#ffffff" stroke-width="2" />
                     <line x1="210" y1="60" x2="210" y2="300" stroke="#ffffff" stroke-width="2" />
                     <text x="145" y="230" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">柱</text>
 
-                    <!-- 柱芯点線 -->
                     <line x1="120" y1="60" x2="120" y2="360" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
                     <line x1="175" y1="60" x2="175" y2="360" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
 
-                    <!-- 落とし口 (右) -->
                     <rect x="275" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
                     <text x="294" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
                     <line x1="294" y1="88" x2="294" y2="150" stroke="#ef4444" stroke-width="1.5" />
 
-                    <!-- 正面 寸法線 A (柱) -->
                     <line x1="80" y1="115" x2="210" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 88 110 L 80 115 L 88 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 202 110 L 210 115 L 202 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-h-a" x="145" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
 
-                    <!-- 正面 寸法線 B (芯-柱) -->
                     <line x1="210" y1="115" x2="294" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 218 110 L 210 115 L 218 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 286 110 L 294 115 L 286 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-h-b" x="252" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
 
-                    <!-- ===== 側面 (縦エルボ) ===== -->
-                    <!-- 柱 (実線) -->
                     <line x1="510" y1="60" x2="510" y2="295" stroke="#ffffff" stroke-width="2" />
                     <line x1="645" y1="60" x2="645" y2="295" stroke="#ffffff" stroke-width="2" />
                     <text x="578" y="235" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">柱</text>
 
-                    <!-- H鋼梁形状 -->
                     <line x1="535" y1="66" x2="615" y2="66" stroke="#ffffff" stroke-width="4" />
                     <line x1="575" y1="66" x2="575" y2="155" stroke="#ffffff" stroke-width="3" />
                     <line x1="535" y1="155" x2="615" y2="155" stroke="#ffffff" stroke-width="4" />
 
-                    <!-- 側面 足・アングル (グレー矩形) -->
                     <rect x="445" y="235" width="65" height="12" fill="#3f3f46" stroke="#ffffff" stroke-width="1.5" />
                     <line x1="445" y1="155" x2="445" y2="365" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
                     <line x1="390" y1="155" x2="390" y2="365" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
 
-                    <!-- 側面 落とし口 (右) -->
                     <rect x="710" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
                     <text x="729" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
                     <line x1="729" y1="88" x2="729" y2="215" stroke="#ef4444" stroke-width="1.5" />
 
-                    <!-- 側面 梁下寸法線 D -->
                     <line x1="635" y1="155" x2="685" y2="155" stroke="#ef4444" stroke-width="1.2" />
                     <line x1="665" y1="65" x2="665" y2="155" stroke="#ef4444" stroke-width="2" />
                     <path d="M 660 73 L 665 65 L 670 73" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 660 147 L 665 155 L 670 147" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-d" x="680" y="115" fill="#ef4444" font-size="18" font-weight="bold">D</text>
 
-                    <!-- 側面 寸法線 C (柱芯+足) -->
                     <line x1="445" y1="215" x2="510" y2="215" stroke="#ef4444" stroke-width="2" />
                     <line x1="445" y1="170" x2="445" y2="235" stroke="#ef4444" stroke-width="1.5" />
                     <path d="M 453 210 L 445 215 L 453 220" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 502 210 L 510 215 L 502 220" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-c" x="477" y="200" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">C</text>
 
-                    <!-- 側面 寸法線 A (柱) -->
                     <line x1="510" y1="185" x2="645" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 518 180 L 510 185 L 518 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 637 180 L 645 185 L 637 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-a" x="578" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
 
-                    <!-- 側面 寸法線 B (芯-柱) -->
                     <line x1="645" y1="185" x2="729" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 653 180 L 645 185 L 653 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 721 180 L 729 185 L 721 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-b" x="687" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
                 `;
             } else {
-                // ==================== 左右反転表示（落とし口が左側、足が右側） ====================
                 svg.innerHTML = `
-                    <!-- 背景基準線 -->
                     <line x1="30" y1="60" x2="380" y2="60" stroke="#888" stroke-width="2" />
                     <line x1="460" y1="60" x2="810" y2="60" stroke="#888" stroke-width="2" />
-
-                    <!-- タイトル -->
                     <text x="245" y="38" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">横エルボ</text>
                     <text x="635" y="38" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">縦エルボ</text>
 
-                    <!-- ===== 正面 (横エルボ) 反転 ===== -->
-                    <!-- 柱 (実線) 180〜310 -->
                     <line x1="180" y1="60" x2="180" y2="300" stroke="#ffffff" stroke-width="2" />
                     <line x1="310" y1="60" x2="310" y2="300" stroke="#ffffff" stroke-width="2" />
                     <text x="245" y="230" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">柱</text>
 
-                    <!-- 柱芯点線 -->
                     <line x1="215" y1="60" x2="215" y2="360" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
                     <line x1="270" y1="60" x2="270" y2="360" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
 
-                    <!-- 落とし口 (左) 77〜115 (中心96) -->
                     <rect x="77" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
                     <text x="96" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
                     <line x1="96" y1="88" x2="96" y2="150" stroke="#ef4444" stroke-width="1.5" />
 
-                    <!-- 正面 寸法線 B (落とし口〜柱左面: 96〜180) -->
                     <line x1="96" y1="115" x2="180" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 104 110 L 96 115 L 104 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 172 110 L 180 115 L 172 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-h-b" x="138" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
 
-                    <!-- 正面 寸法線 A (柱: 180〜310) -->
                     <line x1="180" y1="115" x2="310" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 188 110 L 180 115 L 188 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 302 110 L 310 115 L 302 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-h-a" x="245" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
 
-                    <!-- ===== 側面 (縦エルボ) 反転 ===== -->
-                    <!-- 柱 (実線) 610〜745 (巾135) -->
                     <line x1="610" y1="60" x2="610" y2="295" stroke="#ffffff" stroke-width="2" />
                     <line x1="745" y1="60" x2="745" y2="295" stroke="#ffffff" stroke-width="2" />
                     <text x="678" y="235" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">柱</text>
 
-                    <!-- H鋼梁形状 (柱の中) -->
                     <line x1="635" y1="66" x2="715" y2="66" stroke="#ffffff" stroke-width="4" />
                     <line x1="675" y1="66" x2="675" y2="155" stroke="#ffffff" stroke-width="3" />
                     <line x1="635" y1="155" x2="715" y2="155" stroke="#ffffff" stroke-width="4" />
 
-                    <!-- 側面 足・アングル (右側に反転: 745〜810) -->
                     <rect x="745" y="235" width="65" height="12" fill="#3f3f46" stroke="#ffffff" stroke-width="1.5" />
                     <line x1="810" y1="155" x2="810" y2="365" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
 
-                    <!-- 側面 落とし口 (左側に反転: 507〜545、芯526) -->
                     <rect x="507" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
                     <text x="526" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
                     <line x1="526" y1="88" x2="526" y2="215" stroke="#ef4444" stroke-width="1.5" />
 
-                    <!-- 側面 梁下寸法線 D (芯526の近傍) -->
                     <line x1="545" y1="155" x2="585" y2="155" stroke="#ef4444" stroke-width="1.2" />
                     <line x1="565" y1="65" x2="565" y2="155" stroke="#ef4444" stroke-width="2" />
                     <path d="M 560 73 L 565 65 L 570 73" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 560 147 L 565 155 L 570 147" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-d" x="548" y="115" fill="#ef4444" font-size="18" font-weight="bold">D</text>
 
-                    <!-- 側面 寸法線 B (落とし口526〜柱面610) -->
                     <line x1="526" y1="185" x2="610" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 534 180 L 526 185 L 534 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 602 180 L 610 185 L 602 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-b" x="568" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
 
-                    <!-- 側面 寸法線 A (柱: 610〜745) -->
                     <line x1="610" y1="185" x2="745" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 618 180 L 610 185 L 618 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 737 180 L 745 185 L 737 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <text id="diag-v-a" x="678" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
 
-                    <!-- 側面 寸法線 C (柱右面745〜足先端810) -->
                     <line x1="745" y1="215" x2="810" y2="215" stroke="#ef4444" stroke-width="2" />
                     <line x1="810" y1="170" x2="810" y2="235" stroke="#ef4444" stroke-width="1.5" />
                     <path d="M 753 210 L 745 215 L 753 220" fill="none" stroke="#ef4444" stroke-width="2" />
@@ -1072,20 +1091,13 @@
             }
         }
 
-        // 図面の ABCD テキストを左側の入力値で更新
         function updateDiagramValues() {
-            // 横エルボの + 柱寸法 (A)
             const hExtra = inputs['h-extra'];
-            // 横エルボの 芯-柱寸法 (B)
             const hCore = inputs['h-core'];
-            // 縦エルボの 芯-柱寸法 (B)
             const vCore = inputs['v-core'];
-            // 縦エルボの 足(C)
             const vLeg = inputs['v-leg'];
-            // ドレン下の ドレン下 (D)
             const dCore = inputs['d-core'];
 
-            // 1. 横エルボ・縦エルボの図の A = 横エルボの + 柱寸法 (1以上で表示)
             const numHExtra = parseFloat(hExtra);
             const aVal = (!isNaN(numHExtra) && numHExtra >= 1) ? formatNum(numHExtra) : 'A';
             const diagHA = document.getElementById('diag-h-a');
@@ -1093,33 +1105,28 @@
             if (diagHA) diagHA.textContent = aVal;
             if (diagVA) diagVA.textContent = aVal;
 
-            // 2. 横エルボの図の B = 横エルボの 芯-柱寸法 (1以上で表示)
             const numHCore = parseFloat(hCore);
             const hbVal = (!isNaN(numHCore) && numHCore >= 1) ? formatNum(numHCore) : 'B';
             const diagHB = document.getElementById('diag-h-b');
             if (diagHB) diagHB.textContent = hbVal;
 
-            // 3. 縦エルボの図の B = 縦エルボの 芯-柱寸法 (1以上で表示)
             const numVCore = parseFloat(vCore);
             const vbVal = (!isNaN(numVCore) && numVCore >= 1) ? formatNum(numVCore) : 'B';
             const diagVB = document.getElementById('diag-v-b');
             if (diagVB) diagVB.textContent = vbVal;
 
-            // 4. 縦エルボの図の C = 足(C) の実測値 (1以上で表示)
             const diagVC = document.getElementById('diag-v-c');
             if (diagVC) {
                 const numVLeg = parseFloat(vLeg);
                 diagVC.textContent = (!isNaN(numVLeg) && numVLeg >= 1) ? formatNum(numVLeg) : 'C';
             }
 
-            // 5. 縦エルボの図の D = ドレン下の ドレン下 (1以上で表示)
             const numDCore = parseFloat(dCore);
             const dVal = (!isNaN(numDCore) && numDCore >= 1) ? formatNum(numDCore) : 'D';
             const diagVD = document.getElementById('diag-v-d');
             if (diagVD) diagVD.textContent = dVal;
         }
 
-        // リセットモーダル制御
         function openResetModal() {
             const modal = document.getElementById('reset-modal');
             if (modal) modal.classList.add('active');
@@ -1130,47 +1137,38 @@
             if (modal) modal.classList.remove('active');
         }
 
-        // 全入力データのリセット実行
         function executeResetInputs() {
-            // 各入力フィールドのクリア（吊り金物は初期値100に戻す）
             inputs['d-core'] = '';
-            inputs['d-extra'] = '100';
+            inputs['d-extra'] = '';
             inputs['v-core'] = '';
             inputs['v-leg'] = '';
             inputs['v-plus'] = '';
             inputs['h-core'] = '';
             inputs['h-extra'] = '';
 
-            // ローカルストレージの入力値もリセット
             saveInputsToStorage();
 
-            // 各セルの画面表示更新
             Object.keys(inputs).forEach(key => {
                 updateFieldDisplay(key, inputs[key]);
             });
 
-            // 計算結果の更新
             calcDrain();
             calcVertical();
             calcHorizontal();
-
-            // 図面表示の更新
             updateDiagramValues();
-
-            // 縦エルボにフォーカスを戻す
             focusInput('v-core');
 
             closeResetModal();
             showToast("すべての入力データをリセットしました");
         }
 
-        // ドレン下の計算: ドレン下 + 吊り金物 - 共通サイズ別値 (75=10, 100=15, 125=20)
         function calcDrain() {
             const size = document.getElementById('shared-size').value;
             const sub = drainOffsets[size] !== undefined ? drainOffsets[size] : 15;
 
             const c = parseFloat(inputs['d-core']);
-            const p = parseFloat(inputs['d-extra']) || 0;
+            // 吊り金物は空欄なら標準値100を適用
+            const p = inputs['d-extra'] !== '' ? (parseFloat(inputs['d-extra']) || 0) : 100;
             const resEl = document.getElementById('d-result-val');
 
             if (isNaN(c) || c === 0) {
@@ -1178,7 +1176,6 @@
                 return;
             }
 
-            // 式: ドレン下 + 吊り金物 - 共通サイズ別引き寸
             const res = Math.round((c + p - sub) * 10) / 10;
             resEl.innerText = formatNum(res);
         }
@@ -1197,12 +1194,12 @@
             }
         }
 
-        // サイズ変更時の連動（サイズと重寸法は共通）
         function onSizeChange(sizeVal) {
             const data = elbowData[sizeVal];
-            document.getElementById('shared-d-val').innerText = data.d;
+            if (data) {
+                document.getElementById('shared-d-val').innerText = data.d;
+            }
 
-            // 選択されたサイズをローカルストレージに保存
             try {
                 localStorage.setItem(SIZE_STORAGE_KEY, sizeVal);
             } catch (e) {}
@@ -1213,13 +1210,11 @@
                 descEl.innerText = `ドレン下 + 吊り金物 - ${sub}`;
             }
 
-            // 計算を再実行
             calcDrain();
             calcVertical();
             calcHorizontal();
         }
 
-        // 縦エルボの計算
         function calcVertical() {
             const size = document.getElementById('shared-size').value;
             const { d, e } = elbowData[size];
@@ -1228,7 +1223,6 @@
             const leg = parseFloat(inputs['v-leg']) || 0;
             const hExtra = parseFloat(inputs['h-extra']) || 0;
 
-            // 柱寸+足 を自動計算（横エルボの柱寸法 A ＋ 足 C）
             let autoPlus = 0;
             const hasLeg = inputs['v-leg'] !== '' && !isNaN(parseFloat(inputs['v-leg']));
             const hasHExtra = inputs['h-extra'] !== '' && !isNaN(parseFloat(inputs['h-extra']));
@@ -1257,7 +1251,6 @@
                 return;
             }
 
-            // 縦エルボ: 「柱寸+足」がある場合のみサイズ別追加値（75=45, 100=57, 125=70）を加算
             let extraPlus = 0;
             if (autoPlus > 0) {
                 extraPlus = distXData[size] || 0;
@@ -1268,7 +1261,6 @@
             resEl.innerText = formatNum(res);
         }
 
-        // 横エルボの計算
         function calcHorizontal() {
             const size = document.getElementById('shared-size').value;
             const { d, e } = elbowData[size];
@@ -1282,16 +1274,67 @@
                 return;
             }
 
-            // 横エルボ: 芯-柱寸法 ＋ (柱寸法 / 2)
             const actualCore = c + (p / 2);
             const res = Math.round((actualCore - ((e * 2) - (d * 2))) * 10) / 10;
             resEl.innerText = formatNum(res);
         }
 
-        // 履歴保存処理
+        let editingHistoryId = null;
+
+        function getNextSequenceNumber(type) {
+            const sameTypeItems = histories.filter(h => h.type === type);
+            let maxNo = 0;
+            sameTypeItems.forEach(item => {
+                const parsed = parseInt(item.customNo, 10);
+                if (!isNaN(parsed) && parsed > maxNo) {
+                    maxNo = parsed;
+                }
+            });
+            return maxNo > 0 ? maxNo + 1 : sameTypeItems.length + 1;
+        }
+
+        function openNumberEditModal(id) {
+            const record = histories.find(x => x.id === id);
+            if (!record) return;
+
+            editingHistoryId = id;
+            const titleEl = document.getElementById('edit-no-title');
+            const inputEl = document.getElementById('edit-no-input');
+            const modal = document.getElementById('number-edit-modal');
+
+            if (titleEl) titleEl.innerText = `${record.typeLabel} の番号を変更`;
+            if (inputEl) {
+                inputEl.value = record.customNo || '';
+                setTimeout(() => inputEl.focus(), 100);
+            }
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeNumberEditModal() {
+            editingHistoryId = null;
+            const modal = document.getElementById('number-edit-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function executeSaveNumber() {
+            if (!editingHistoryId) return;
+            const inputEl = document.getElementById('edit-no-input');
+            const newNo = inputEl ? inputEl.value.trim() : '';
+
+            const record = histories.find(x => x.id === editingHistoryId);
+            if (record) {
+                record.customNo = newNo || '1';
+                saveToStorage();
+                renderHistories();
+                showToast(`番号を「No. ${record.customNo}」に変更しました`);
+            }
+            closeNumberEditModal();
+        }
+
         function saveHistoryRecord(type) {
             const size = document.getElementById('shared-size').value;
             let record = null;
+            const seqNo = getNextSequenceNumber(type);
 
             if (type === 'drain') {
                 const res = document.getElementById('d-result-val').innerText;
@@ -1300,14 +1343,15 @@
                     showToast("ドレン下の数値を入力してください");
                     return;
                 }
-                const p = inputs['d-extra'];
+                const p = inputs['d-extra'] !== '' ? inputs['d-extra'] : '100';
                 const sub = drainOffsets[size] || 15;
                 record = {
                     id: Date.now(),
                     type: 'drain',
                     typeLabel: 'ドレン下',
+                    customNo: String(seqNo),
                     size: size,
-                    desc: `ドレン下:${formatNum(c)}${p ? ` (+吊り金物:${formatNum(p)})` : ''} - ${sub}`,
+                    desc: `ドレン下:${formatNum(c)} (+吊り金物:${formatNum(p)}) - ${sub}`,
                     result: res,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     locked: false
@@ -1325,6 +1369,7 @@
                     id: Date.now(),
                     type: 'vertical',
                     typeLabel: '縦エルボ',
+                    customNo: String(seqNo),
                     size: size,
                     desc: `芯-柱:${formatNum(c)}${autoPlus ? ` (柱寸+足:${formatNum(autoPlus)}${leg ? ` [足:${formatNum(leg)}]` : ''})` : ''}`,
                     result: res,
@@ -1343,6 +1388,7 @@
                     id: Date.now(),
                     type: 'horizontal',
                     typeLabel: '横エルボ',
+                    customNo: String(seqNo),
                     size: size,
                     desc: `芯-柱:${formatNum(c)}${p ? ` (+柱:${formatNum(p)}/2)` : ''}`,
                     result: res,
@@ -1353,7 +1399,6 @@
 
             histories.unshift(record);
             
-            // 最大50件制限（ロック付きは保護）
             if (histories.length > 50) {
                 const unlockedIdx = histories.map(h => h.locked).lastIndexOf(false);
                 if (unlockedIdx !== -1) histories.splice(unlockedIdx, 1);
@@ -1361,7 +1406,7 @@
 
             saveToStorage();
             renderHistories();
-            showToast(`${record.typeLabel}のデータを保存しました`);
+            showToast(`${record.typeLabel} No.${record.customNo} を保存しました`);
             isOverwriteMode = true;
         }
 
@@ -1394,17 +1439,23 @@
         }
 
         function saveToStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(histories));
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(histories));
+            } catch (e) {
+                console.warn('履歴保存エラー:', e);
+            }
         }
 
         function renderHistories() {
             const container = document.getElementById('unified-history-list');
             const countEl = document.getElementById('history-count');
-            countEl.innerText = `${histories.length}件`;
+            if (countEl) countEl.innerText = `${histories.length}件`;
+
+            if (!container) return;
 
             if (histories.length === 0) {
                 container.innerHTML = `
-                    <div class="py-12 text-center text-zinc-600 font-bold text-[14px]">
+                    <div class="py-10 text-center text-zinc-600 font-bold text-[13px]">
                         保存されたデータはありません
                     </div>
                 `;
@@ -1413,42 +1464,45 @@
 
             container.innerHTML = histories.map(h => `
                 <div class="history-item ${h.locked ? 'is-locked' : ''}">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2.5">
                         <button onclick="toggleLock(${h.id})" class="p-1 rounded text-zinc-500 hover:text-amber-500">
                             ${h.locked 
-                                ? '<svg width="20" height="20" fill="currentColor" class="text-amber-500" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>' 
-                                : '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
+                                ? '<svg width="18" height="18" fill="currentColor" class="text-amber-500" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>' 
+                                : '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
                             }
                         </button>
                         <div>
-                            <div class="flex items-center gap-2 mb-1">
+                            <div class="flex items-center gap-2 mb-0.5">
                                 <span class="badge-type ${h.type}">${h.typeLabel}</span>
-                                <span class="text-[14px] font-bold text-zinc-300">呼び径 ${h.size}</span>
-                                <span class="text-[14px] text-zinc-500">${h.time || ''}</span>
+                                <button class="badge-no" onclick="openNumberEditModal(${h.id})" title="タップして番号を変更">
+                                    <span>No. ${h.customNo || '1'}</span>
+                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <span class="text-[12px] font-bold text-zinc-300">呼び径 ${h.size}</span>
+                                <span class="text-[12px] text-zinc-500">${h.time || ''}</span>
                             </div>
-                            <div class="text-[14px] text-zinc-400 font-medium">${h.desc}</div>
+                            <div class="text-[12px] text-zinc-400 font-medium">${h.desc}</div>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
                         <div class="text-right cursor-pointer" onclick="copyRaw('${h.result}')">
-                            <span class="text-xl font-extrabold text-white">${h.result}</span>
-                            <span class="text-[14px] text-zinc-400 font-bold ml-0.5">mm</span>
+                            <span class="text-lg font-extrabold text-white">${h.result}</span>
+                            <span class="text-[12px] text-zinc-400 font-bold ml-0.5">mm</span>
                         </div>
                         ${!h.locked ? `
-                        <button onclick="deleteHistory(${h.id})" class="p-1.5 text-zinc-500 hover:text-red-400">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <button onclick="deleteHistory(${h.id})" class="p-1 text-zinc-500 hover:text-red-400">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
-                        ` : '<div class="w-[26px]"></div>'}
+                        ` : '<div class="w-[24px]"></div>'}
                     </div>
                 </div>
             `).join('');
         }
 
-        // コピー & トースト機能
         function copyResult(id) {
-            const val = document.getElementById(id).innerText;
-            copyRaw(val);
+            const el = document.getElementById(id);
+            if (el) copyRaw(el.innerText);
         }
 
         function copyRaw(val) {
@@ -1490,46 +1544,52 @@
             }
         }
 
-        // オフラインキャッシュ用Service Workerのインライン登録
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', e => self.skipWaiting());
-                self.addEventListener('activate', e => self.clients.claim());
-                self.addEventListener('fetch', e => {
-                    e.respondWith(
-                        fetch(e.request).catch(() => caches.match(e.request))
-                    );
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'text/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-        }
-
         window.addEventListener('online', updateNetworkStatus);
         window.addEventListener('offline', updateNetworkStatus);
 
-        // 初期ロード
         window.addEventListener('DOMContentLoaded', () => {
-            // 保存済みの共通サイズを復元
             const savedSize = localStorage.getItem(SIZE_STORAGE_KEY);
             if (savedSize && elbowData[savedSize]) {
                 const selectEl = document.getElementById('shared-size');
                 if (selectEl) selectEl.value = savedSize;
             }
 
-            // 各セルの表示を入力値で初期化
+            const counts = { drain: 0, vertical: 0, horizontal: 0 };
+            [...histories].reverse().forEach(item => {
+                if (counts[item.type] !== undefined) {
+                    counts[item.type]++;
+                    if (!item.customNo) {
+                        item.customNo = String(counts[item.type]);
+                    }
+                }
+            });
+            saveToStorage();
+
             Object.keys(inputs).forEach(key => {
                 updateFieldDisplay(key, inputs[key]);
             });
 
-            // SVG図面の初期描画
             renderDiagram();
 
-            onSizeChange(document.getElementById('shared-size').value);
+            const sharedSizeEl = document.getElementById('shared-size');
+            if (sharedSizeEl) {
+                onSizeChange(sharedSizeEl.value);
+            }
             renderHistories();
             updateDiagramValues();
             updateNetworkStatus();
         });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then((registration) => {
+                    console.log('ServiceWorker registration successful:', registration.scope);
+                }).catch((err) => {
+                    console.error('ServiceWorker registration failed:', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
