@@ -525,12 +525,6 @@
             border-color: #5c3417;
         }
     </style>
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" type="image/png" href="./icon-192.png">
-    <link rel="apple-touch-icon" href="./icon-180.png">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -973,7 +967,7 @@
 
                     <rect x="275" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
                     <text x="294" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
-                    <line x1="294" y1="88" x2="294" y2="185" stroke="#ef4444" stroke-width="1.5" />
+                    <line x1="294" y1="88" x2="294" y2="210" stroke="#ef4444" stroke-width="1.5" />
 
                     <line x1="80" y1="115" x2="210" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 88 110 L 80 115 L 88 120" fill="none" stroke="#ef4444" stroke-width="2" />
@@ -986,10 +980,10 @@
                     <text id="diag-h-b" x="252" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
 
                     <!-- 横エルボ 切寸法線 (緑) -->
-                    <line x1="145" y1="165" x2="294" y2="165" stroke="#32d74b" stroke-width="2.2" />
-                    <path d="M 153 160 L 145 165 L 153 170" fill="none" stroke="#32d74b" stroke-width="2.2" />
-                    <path d="M 286 160 L 294 165 L 286 170" fill="none" stroke="#32d74b" stroke-width="2.2" />
-                    <text id="diag-h-cut" x="220" y="157" fill="#32d74b" font-size="17" font-weight="800" text-anchor="middle" style="paint-order: stroke fill; stroke: #0e0e11; stroke-width: 4px;">切寸</text>
+                    <line x1="145" y1="190" x2="294" y2="190" stroke="#32d74b" stroke-width="2.2" />
+                    <path d="M 153 185 L 145 190 L 153 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
+                    <path d="M 286 185 L 294 190 L 286 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
+                    <text id="diag-h-cut" x="220" y="182" fill="#32d74b" font-size="17" font-weight="800" text-anchor="middle" style="paint-order: stroke fill; stroke: #0e0e11; stroke-width: 4px;">切寸</text>
 
                     <line x1="510" y1="60" x2="510" y2="330" stroke="#ffffff" stroke-width="2" />
                     <line x1="645" y1="60" x2="645" y2="330" stroke="#ffffff" stroke-width="2" />
@@ -1051,7 +1045,7 @@
 
                     <rect x="77" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
                     <text x="96" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
-                    <line x1="96" y1="88" x2="96" y2="185" stroke="#ef4444" stroke-width="1.5" />
+                    <line x1="96" y1="88" x2="96" y2="210" stroke="#ef4444" stroke-width="1.5" />
 
                     <line x1="96" y1="115" x2="180" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 104 110 L 96 115 L 104 120" fill="none" stroke="#ef4444" stroke-width="2" />
@@ -1064,10 +1058,10 @@
                     <text id="diag-h-a" x="245" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
 
                     <!-- 横エルボ 切寸法線 (緑 反転) -->
-                    <line x1="96" y1="165" x2="245" y2="165" stroke="#32d74b" stroke-width="2.2" />
-                    <path d="M 104 160 L 96 165 L 104 170" fill="none" stroke="#32d74b" stroke-width="2.2" />
-                    <path d="M 237 160 L 245 165 L 237 170" fill="none" stroke="#32d74b" stroke-width="2.2" />
-                    <text id="diag-h-cut" x="170" y="157" fill="#32d74b" font-size="17" font-weight="800" text-anchor="middle" style="paint-order: stroke fill; stroke: #0e0e11; stroke-width: 4px;">切寸</text>
+                    <line x1="96" y1="190" x2="245" y2="190" stroke="#32d74b" stroke-width="2.2" />
+                    <path d="M 104 185 L 96 190 L 104 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
+                    <path d="M 237 185 L 245 190 L 237 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
+                    <text id="diag-h-cut" x="170" y="182" fill="#32d74b" font-size="17" font-weight="800" text-anchor="middle" style="paint-order: stroke fill; stroke: #0e0e11; stroke-width: 4px;">切寸</text>
 
                     <line x1="610" y1="60" x2="610" y2="330" stroke="#ffffff" stroke-width="2" />
                     <line x1="745" y1="60" x2="745" y2="330" stroke="#ffffff" stroke-width="2" />
@@ -1619,17 +1613,6 @@
             updateDiagramValues();
             updateNetworkStatus();
         });
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then((registration) => {
-                    console.log('ServiceWorker registration successful:', registration.scope);
-                }).catch((err) => {
-                    console.error('ServiceWorker registration failed:', err);
-                });
-            });
-        }
     </script>
 </body>
 </html>
