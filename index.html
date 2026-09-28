@@ -143,6 +143,43 @@
             color: #72f085;
         }
 
+        /* ヘッダー行内の「足 C」入力セル（行の高さを変えずに収めるスタイル） */
+        .calc-cell-hdr {
+            background: #18181c;
+            border: 1px solid #3a3a40;
+            border-radius: 6px;
+            height: 26px;
+            padding: 0 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .calc-cell-hdr.focused {
+            background: #232328;
+            border-color: var(--ios-orange) !important;
+            box-shadow: 0 0 0 1.5px var(--ios-orange);
+        }
+        .calc-cell-hdr .hdr-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #a1a1a6;
+        }
+        .calc-cell-hdr .hdr-val {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ios-orange);
+            min-width: 24px;
+            text-align: right;
+        }
+        .calc-cell-hdr .hdr-val.placeholder {
+            color: #ef4444 !important;
+            font-weight: 800;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
         /* 入力と切寸法を横一列に統合したボディ */
         .elbow-card-body {
             display: grid;
@@ -589,17 +626,25 @@
             <!-- 縦エルボ ブロック -->
             <div class="elbow-card vertical">
                 <div class="elbow-card-header">
-                    <span>縦エルボ</span>
-                    <span class="text-[12px] text-indigo-300 font-semibold">芯-柱 + (柱寸+足) + α</span>
+                    <div class="flex items-center gap-2.5">
+                        <span>縦エルボ</span>
+                        <!-- ラベル行内の足「C」入力枠 -->
+                        <div class="calc-cell-hdr" id="cell-v-leg" onclick="focusInput('v-leg')">
+                            <span class="hdr-label">足(C):</span>
+                            <div id="v-leg" class="hdr-val placeholder">C</div>
+                        </div>
+                    </div>
+                    <span class="text-[12px] text-indigo-300 font-semibold" id="v-formula-desc">芯-柱 + (柱寸+足) + α</span>
                 </div>
                 <div class="elbow-card-body">
                     <div class="calc-cell focused" id="cell-v-core" onclick="focusInput('v-core')">
                         <span class="input-label-left">芯-柱寸法</span>
                         <div id="v-core" class="input-value placeholder">B</div>
                     </div>
-                    <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-plus')">
+                    <!-- 柱寸+足（柱寸法A + 足C の自動計算結果を表示） -->
+                    <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-leg')">
                         <span class="input-label-left">柱寸+足</span>
-                        <div id="v-plus" class="input-value placeholder">C</div>
+                        <div id="v-plus" class="input-value text-indigo-300 placeholder">---</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('v-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -761,7 +806,8 @@
             'd-core': savedInputs['d-core'] !== undefined ? savedInputs['d-core'] : '',      // ドレン下
             'd-extra': savedInputs['d-extra'] !== undefined ? savedInputs['d-extra'] : '100', // 吊り金物 (初期値: 100)
             'v-core': savedInputs['v-core'] !== undefined ? savedInputs['v-core'] : '',      // 縦エルボ: 芯-柱寸法
-            'v-plus': savedInputs['v-plus'] !== undefined ? savedInputs['v-plus'] : '',      // 縦エルボ: 柱寸+足
+            'v-leg': savedInputs['v-leg'] !== undefined ? savedInputs['v-leg'] : '',        // 縦エルボ: 足(C)
+            'v-plus': savedInputs['v-plus'] !== undefined ? savedInputs['v-plus'] : '',      // 縦エルボ: 柱寸+足 (自動計算)
             'h-core': savedInputs['h-core'] !== undefined ? savedInputs['h-core'] : '',      // 横エルボ: 芯-柱寸法
             'h-extra': savedInputs['h-extra'] !== undefined ? savedInputs['h-extra'] : ''     // 横エルボ: 柱寸法
         };
@@ -770,14 +816,15 @@
             'd-core': 'D',
             'd-extra': '100',
             'v-core': 'B',
-            'v-plus': 'C',
+            'v-leg': 'C',
+            'v-plus': '---',
             'h-core': 'B',
             'h-extra': 'A'
         };
 
         // フォーカス切り替え
         function focusInput(id) {
-            document.querySelectorAll('.calc-cell').forEach(el => el.classList.remove('focused'));
+            document.querySelectorAll('.calc-cell, .calc-cell-hdr').forEach(el => el.classList.remove('focused'));
             const targetCell = document.getElementById('cell-' + id);
             if (targetCell) targetCell.classList.add('focused');
             
@@ -814,6 +861,8 @@
                 calcVertical();
             } else if (activeInputId.startsWith('h-')) {
                 calcHorizontal();
+                // 横エルボの柱寸法(A)が変わった場合、縦エルボの柱寸+足(A+C)も自動再計算
+                calcVertical();
             }
 
             // 図面のABCDラベルを連動更新
@@ -1031,15 +1080,15 @@
 
         // 図面の ABCD テキストを左側の入力値で更新
         function updateDiagramValues() {
-            // 横エルボの + 柱寸法
+            // 横エルボの + 柱寸法 (A)
             const hExtra = inputs['h-extra'];
-            // 横エルボの 芯-柱寸法
+            // 横エルボの 芯-柱寸法 (B)
             const hCore = inputs['h-core'];
-            // 縦エルボの 芯-柱寸法
+            // 縦エルボの 芯-柱寸法 (B)
             const vCore = inputs['v-core'];
-            // 縦エルボの 柱寸+足
-            const vPlus = inputs['v-plus'];
-            // ドレン下の ドレン下
+            // 縦エルボの 足(C)
+            const vLeg = inputs['v-leg'];
+            // ドレン下の ドレン下 (D)
             const dCore = inputs['d-core'];
 
             // 1. 横エルボ・縦エルボの図の A = 横エルボの + 柱寸法 (1以上で表示)
@@ -1062,19 +1111,11 @@
             const diagVB = document.getElementById('diag-v-b');
             if (diagVB) diagVB.textContent = vbVal;
 
-            // 4. 縦エルボの図の C = 縦エルボの (柱寸+足 - (横エルボの + 柱寸法)) (1以上で表示、0やマイナスはC)
+            // 4. 縦エルボの図の C = 足(C) の実測値 (1以上で表示)
             const diagVC = document.getElementById('diag-v-c');
             if (diagVC) {
-                const hasVPlus = (vPlus !== '' && !isNaN(parseFloat(vPlus)));
-                const hasHExtra = (hExtra !== '' && !isNaN(parseFloat(hExtra)));
-                if (hasVPlus || hasHExtra) {
-                    const cCalc = (parseFloat(vPlus) || 0) - (parseFloat(hExtra) || 0);
-                    const roundedC = Math.round(cCalc * 10) / 10;
-                    // 1以上の場合のみ表示（マイナスや0は元の「C」を表示）
-                    diagVC.textContent = (roundedC >= 1) ? formatNum(roundedC) : 'C';
-                } else {
-                    diagVC.textContent = 'C';
-                }
+                const numVLeg = parseFloat(vLeg);
+                diagVC.textContent = (!isNaN(numVLeg) && numVLeg >= 1) ? formatNum(numVLeg) : 'C';
             }
 
             // 5. 縦エルボの図の D = ドレン下の ドレン下 (1以上で表示)
@@ -1101,6 +1142,7 @@
             inputs['d-core'] = '';
             inputs['d-extra'] = '100';
             inputs['v-core'] = '';
+            inputs['v-leg'] = '';
             inputs['v-plus'] = '';
             inputs['h-core'] = '';
             inputs['h-extra'] = '';
@@ -1189,7 +1231,31 @@
             const { d, e } = elbowData[size];
 
             const c = parseFloat(inputs['v-core']);
-            const p = parseFloat(inputs['v-plus']) || 0;
+            const leg = parseFloat(inputs['v-leg']) || 0;
+            const hExtra = parseFloat(inputs['h-extra']) || 0;
+
+            // 柱寸+足 を自動計算（横エルボの柱寸法 A ＋ 足 C）
+            let autoPlus = 0;
+            const hasLeg = inputs['v-leg'] !== '' && !isNaN(parseFloat(inputs['v-leg']));
+            const hasHExtra = inputs['h-extra'] !== '' && !isNaN(parseFloat(inputs['h-extra']));
+
+            if (hasLeg || hasHExtra) {
+                autoPlus = hExtra + leg;
+                inputs['v-plus'] = String(autoPlus);
+                const plusEl = document.getElementById('v-plus');
+                if (plusEl) {
+                    plusEl.innerText = formatNum(autoPlus);
+                    plusEl.classList.remove('placeholder');
+                }
+            } else {
+                inputs['v-plus'] = '';
+                const plusEl = document.getElementById('v-plus');
+                if (plusEl) {
+                    plusEl.innerText = '---';
+                    plusEl.classList.add('placeholder');
+                }
+            }
+
             const resEl = document.getElementById('v-result-val');
 
             if (isNaN(c) || c === 0) {
@@ -1197,13 +1263,13 @@
                 return;
             }
 
-            // 縦エルボ: 「+」がある場合のみサイズ別追加値（75=45, 100=57, 125=70）を加算
+            // 縦エルボ: 「柱寸+足」がある場合のみサイズ別追加値（75=45, 100=57, 125=70）を加算
             let extraPlus = 0;
-            if (p > 0) {
+            if (autoPlus > 0) {
                 extraPlus = distXData[size] || 0;
             }
 
-            const actualCore = c + p + extraPlus;
+            const actualCore = c + autoPlus + extraPlus;
             const res = Math.round((actualCore - ((e * 2) - (d * 2))) * 10) / 10;
             resEl.innerText = formatNum(res);
         }
@@ -1259,13 +1325,14 @@
                     showToast("縦エルボの数値を入力してください");
                     return;
                 }
-                const p = inputs['v-plus'];
+                const autoPlus = inputs['v-plus'];
+                const leg = inputs['v-leg'];
                 record = {
                     id: Date.now(),
                     type: 'vertical',
                     typeLabel: '縦エルボ',
                     size: size,
-                    desc: `芯-柱:${formatNum(c)}${p ? ` (+足:${formatNum(p)})` : ''}`,
+                    desc: `芯-柱:${formatNum(c)}${autoPlus ? ` (柱寸+足:${formatNum(autoPlus)}${leg ? ` [足:${formatNum(leg)}]` : ''})` : ''}`,
                     result: res,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     locked: false
