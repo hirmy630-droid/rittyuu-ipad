@@ -185,8 +185,11 @@
         }
 
         .input-value.placeholder {
-            font-size: 14px;
-            color: #636366 !important;
+            font-size: 16px;
+            font-weight: 800;
+            color: #ef4444 !important;
+            opacity: 0.75;
+            letter-spacing: 0.5px;
         }
 
         .result-strip {
@@ -535,7 +538,7 @@
                 <div class="elbow-card-body">
                     <div class="calc-cell" id="cell-d-core" onclick="focusInput('d-core')">
                         <span class="input-label-left">ドレン下</span>
-                        <div id="d-core" class="input-value">0</div>
+                        <div id="d-core" class="input-value placeholder">D</div>
                     </div>
                     <div class="calc-cell" id="cell-d-extra" onclick="focusInput('d-extra')">
                         <span class="input-label-left">吊り金物</span>
@@ -560,11 +563,11 @@
                 <div class="elbow-card-body">
                     <div class="calc-cell focused" id="cell-v-core" onclick="focusInput('v-core')">
                         <span class="input-label-left">芯-柱寸法</span>
-                        <div id="v-core" class="input-value">0</div>
+                        <div id="v-core" class="input-value placeholder">B</div>
                     </div>
                     <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-plus')">
                         <span class="input-label-left">柱寸+足</span>
-                        <div id="v-plus" class="input-value placeholder">㎜</div>
+                        <div id="v-plus" class="input-value placeholder">C</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('v-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -585,11 +588,11 @@
                 <div class="elbow-card-body">
                     <div class="calc-cell" id="cell-h-core" onclick="focusInput('h-core')">
                         <span class="input-label-left">芯-柱寸法</span>
-                        <div id="h-core" class="input-value">0</div>
+                        <div id="h-core" class="input-value placeholder">B</div>
                     </div>
                     <div class="calc-cell" id="cell-h-extra" onclick="focusInput('h-extra')">
                         <span class="input-label-left">+ 柱寸法</span>
-                        <div id="h-extra" class="input-value placeholder">柱寸法</div>
+                        <div id="h-extra" class="input-value placeholder">A</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('h-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -801,12 +804,12 @@
         };
 
         const placeholders = {
-            'd-core': '0',
+            'd-core': 'D',
             'd-extra': '100',
-            'v-core': '0',
-            'v-plus': '㎜',
-            'h-core': '0',
-            'h-extra': '柱寸法'
+            'v-core': 'B',
+            'v-plus': 'C',
+            'h-core': 'B',
+            'h-extra': 'A'
         };
 
         // フォーカス切り替え
@@ -984,15 +987,10 @@
             const el = document.getElementById(id);
             if (!el) return;
 
-            const ph = placeholders[id] || '0';
-            if (val === '') {
+            const ph = placeholders[id] || '';
+            if (val === '' || val === null || val === undefined) {
                 el.innerText = ph;
-                if (ph !== '0') {
-                    el.classList.add('placeholder');
-                } else {
-                    el.classList.remove('placeholder');
-                    el.innerText = '0';
-                }
+                el.classList.add('placeholder');
             } else {
                 el.innerText = formatNum(val);
                 el.classList.remove('placeholder');
@@ -1267,21 +1265,7 @@
             }
         }
 
-        // オフラインキャッシュ用Service Workerのインライン登録
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', e => self.skipWaiting());
-                self.addEventListener('activate', e => self.clients.claim());
-                self.addEventListener('fetch', e => {
-                    e.respondWith(
-                        fetch(e.request).catch(() => caches.match(e.request))
-                    );
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'text/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-        }
-
+        
         window.addEventListener('online', updateNetworkStatus);
         window.addEventListener('offline', updateNetworkStatus);
 
