@@ -525,6 +525,12 @@
             border-color: #5c3417;
         }
     </style>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-180.png">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -1152,12 +1158,14 @@
 
             if (diagHCut) {
                 const hVal = hResEl ? hResEl.innerText : '---';
-                diagHCut.textContent = (hVal && hVal !== '---') ? `${hVal} mm` : '切寸';
+                const hNum = parseFloat(hVal.replace(/,/g, ''));
+                diagHCut.textContent = (hVal && hVal !== '---' && !isNaN(hNum) && hNum > 0) ? `${hVal} mm` : '切寸';
             }
 
             if (diagVCut) {
                 const vVal = vResEl ? vResEl.innerText : '---';
-                diagVCut.textContent = (vVal && vVal !== '---') ? `${vVal} mm` : '切寸';
+                const vNum = parseFloat(vVal.replace(/,/g, ''));
+                diagVCut.textContent = (vVal && vVal !== '---' && !isNaN(vNum) && vNum > 0) ? `${vVal} mm` : '切寸';
             }
         }
 
@@ -1247,6 +1255,7 @@
             calcDrain();
             calcVertical();
             calcHorizontal();
+            updateDiagramValues();
         }
 
         function calcVertical() {
@@ -1613,6 +1622,17 @@
             updateDiagramValues();
             updateNetworkStatus();
         });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then((registration) => {
+                    console.log('ServiceWorker registration successful:', registration.scope);
+                }).catch((err) => {
+                    console.error('ServiceWorker registration failed:', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
