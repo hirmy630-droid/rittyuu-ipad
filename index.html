@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>立駐エルボ (iPad版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --ios-panel: #141416;
+            --ios-card: #1c1c1e;
+            --ios-card-inner: #121214;
+            --ios-border: #2c2c2e;
+            --ios-orange: #ff9f0a;
+            --accent-drain: #af52de;
+            --accent-vertical: #5e5ce6;
+            --accent-horizontal: #32d74b;
+            --ios-silver: #c7c7cc;
+            --ios-silver-dark: #8e8e93;
+            --label-gray: #a1a1a6;
+            --unfocused-border: #38383a;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+            font-size-adjust: none;
+        }
+
+        body {
+            margin: 0;
+            background: var(--ios-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+            color: #ffffff;
+            font-size: 13px; /* 最小フォントサイズ12px以上を担保 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* アプリ共通ヘッダー */
+        .app-header {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0a0a0c;
+            border-bottom: 1px solid var(--ios-border);
+        }
+
+        /* 2カラム分割グリッド (iPad対応) */
+        .ipad-workspace {
+            display: grid;
+            grid-template-columns: 1fr;
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (min-width: 820px) {
+            .ipad-workspace {
+                grid-template-columns: 460px 1fr;
+                height: calc(100vh - 54px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+                overflow: hidden;
+            }
+        }
+
+        @media (min-width: 1100px) {
+            .ipad-workspace {
+                grid-template-columns: 480px 1fr;
+            }
+        }
+
+        .pane-left {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-right: 1px solid var(--ios-border);
+            padding: 10px 14px 16px;
+            background: #0d0d0f;
+            gap: 8px;
+        }
+
+        .pane-right {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 12px 16px 24px;
+            background: #000000;
+            gap: 12px;
+        }
+
+        /* 共通サイズバナー */
+        .common-size-card {
+            background: #18181b;
+            border: 1px solid var(--ios-border);
+            border-radius: 12px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        /* エルボブロック (iPad 11インチ縦収まり最適化) */
+        .elbow-card {
+            background: var(--ios-panel);
+            border: 1px solid var(--ios-border);
+            border-radius: 14px;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .elbow-card-header {
+            padding: 4px 12px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #222226;
+        }
+
+        .elbow-card.drain .elbow-card-header {
+            background: rgba(175, 82, 222, 0.15);
+            color: #d896ff;
+        }
+
+        .elbow-card.vertical .elbow-card-header {
+            background: rgba(94, 92, 230, 0.12);
+            color: #a2a0ff;
+        }
+
+        .elbow-card.horizontal .elbow-card-header {
+            background: rgba(50, 215, 75, 0.12);
+            color: #72f085;
+        }
+
+        /* 入力と切寸法を横一列に統合したボディ */
+        .elbow-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr 140px;
+            background: var(--ios-border);
+            gap: 1px;
+        }
+
+        .calc-cell {
+            background: var(--ios-card-inner);
+            height: 48px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .calc-cell.focused {
+            background: #202024;
+            box-shadow: inset 0 0 0 2px var(--ios-orange) !important;
+            z-index: 5;
+        }
+
+        .input-label-left {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--label-gray);
+            white-space: nowrap;
+        }
+
+        .input-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ios-orange);
+            text-align: right;
+            flex: 1;
+        }
+
+        .input-value.placeholder {
+            font-size: 14px;
+            color: #636366 !important;
+        }
+
+        .result-strip {
+            height: 48px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+        }
+        .result-strip:active { opacity: 0.85; }
+
+        .elbow-card.drain .result-strip { background: var(--accent-drain); }
+        .elbow-card.vertical .result-strip { background: var(--accent-vertical); }
+        .elbow-card.horizontal .result-strip { background: #248a3d; }
+
+        .keypad-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--ios-border);
+            margin: 4px 0 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--ios-border);
+            flex-shrink: 0;
+        }
+
+        .key-btn {
+            background: #1c1c1e;
+            color: white;
+            height: 58px; /* テンキーの縦幅を拡大 (50px -> 58px) */
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.1s;
+        }
+        .key-btn:active { background: #333336; }
+        .key-btn.gray { background: #2c2c2e; color: var(--ios-silver); font-size: 16px; }
+        .key-btn.clear { background: #3a3a3e; color: #ff453a; font-size: 16px; font-weight: 700; }
+
+        /* リセットボタン */
+        .btn-reset-inputs {
+            margin-top: 6px;
+            height: 38px;
+            background: #201a1c;
+            border: 1px solid #4a2428;
+            color: #ff6b6b;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-reset-inputs:active {
+            background: #341f23;
+            border-color: #ff453a;
+        }
+
+        /* 確認モーダル (confirm不使用) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: #1c1c1e;
+            border: 1px solid #38383a;
+            border-radius: 18px;
+            width: 320px;
+            max-width: 90%;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.8);
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+        }
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .btn-action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .btn-save-d, .btn-save-v, .btn-save-h {
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: filter 0.15s;
+        }
+        .btn-save-d { background: var(--accent-drain); }
+        .btn-save-v { background: var(--accent-vertical); }
+        .btn-save-h { background: #28a745; }
+        .btn-save-d:active, .btn-save-v:active, .btn-save-h:active { filter: brightness(0.85); }
+
+        /* 図面表示カード */
+        .diagram-card {
+            background: #151518;
+            border: 1px solid var(--ios-border);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .diagram-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ios-silver);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 履歴リストエリア */
+        .history-card {
+            background: #151518;
+            border: 1px solid var(--ios-border);
+            border-radius: 18px;
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-y: auto;
+            max-height: 480px;
+        }
+
+        .history-item {
+            background: #1c1c1f;
+            border-radius: 12px;
+            border: 1px solid #2a2a2e;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.2s;
+        }
+
+        .history-item.is-locked {
+            border-color: var(--ios-orange);
+            background: #231e18;
+        }
+
+        .badge-type {
+            font-size: 14px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .badge-type.drain { background: rgba(175, 82, 222, 0.25); color: #d896ff; border: 1px solid rgba(175, 82, 222, 0.4); }
+        .badge-type.vertical { background: rgba(94, 92, 230, 0.25); color: #b4b2ff; border: 1px solid rgba(94, 92, 230, 0.4); }
+        .badge-type.horizontal { background: rgba(50, 215, 75, 0.2); color: #8ef79e; border: 1px solid rgba(50, 215, 75, 0.35); }
+
+        #toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 44, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #444;
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 9999;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        /* オフライン時 (Tailwind CDN未取得時) の表示崩れ防止用ユーティリティ */
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .items-center { align-items: center; }
+        .items-baseline { align-items: baseline; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-0\.5 { gap: 2px; }
+        .gap-1 { gap: 4px; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .gap-4 { gap: 16px; }
+        .w-full { width: 100%; }
+        .w-12 { width: 48px; }
+        .h-12 { height: 48px; }
+        .rounded-full { border-radius: 9999px; }
+        .rounded-xl { border-radius: 12px; }
+        .rounded-lg { border-radius: 8px; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .mb-1 { margin-bottom: 4px; }
+        .mb-3 { margin-bottom: 12px; }
+        .mb-5 { margin-bottom: 20px; }
+        .pb-3 { padding-bottom: 12px; }
+        .text-white { color: #ffffff; }
+        .text-zinc-200 { color: #e4e4e7; }
+        .text-zinc-300 { color: #d4d4d8; }
+        .text-zinc-400 { color: #a1a1aa; }
+        .text-zinc-500 { color: #71717a; }
+        .text-zinc-600 { color: #52525b; }
+        .text-red-400 { color: #f87171; }
+        .font-extrabold { font-weight: 800; }
+        .border-b { border-bottom-width: 1px; }
+        .border-zinc-800 { border-color: #27272a; }
+
+        /* オフライン状態バッジ */
+        .status-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #1c2e1f;
+            color: #4ade80;
+            border: 1px solid #28542c;
+        }
+        .status-badge.offline {
+            background: #2d1e13;
+            color: #fb923c;
+            border-color: #5c3417;
+        }
+    </style>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-180.png">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+
+    <div id="toast">コピーしました</div>
+
+    <!-- 全入力リセット確認モーダル -->
+    <div id="reset-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="w-12 h-12 rounded-full bg-red-950/60 border border-red-800/80 text-red-400 mx-auto flex items-center justify-center mb-3">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">入力データをリセット</h3>
+            <p class="text-[13px] text-zinc-400 mb-5 leading-relaxed">
+                すべての入力数値をクリアします。<br><span class="text-xs text-zinc-500">（保存済みの履歴データは残ります）</span>
+            </p>
+            <div class="grid grid-template-columns grid-cols-2 gap-2">
+                <button onclick="closeResetModal()" class="h-10 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold rounded-xl text-[14px]">
+                    キャンセル
+                </button>
+                <button onclick="executeResetInputs()" class="h-10 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-[14px]">
+                    リセット
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- アプリ上部ヘッダー -->
+    <header class="app-header">
+        <div class="flex items-center gap-3">
+            <span class="text-xl font-bold tracking-tight text-white">立駐エルボ計算</span>
+            <span class="text-[14px] font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">iPad Layout</span>
+            <span id="connection-badge" class="status-badge">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                <span>オンライン</span>
+            </span>
+        </div>
+        <div class="text-[14px] font-bold text-zinc-400">KYOWA ROOF</div>
+    </header>
+
+    <!-- iPad 2カラム レイアウト -->
+    <main class="ipad-workspace">
+        
+        <!-- 左側ペイン: 計算入力 & キーパッド -->
+        <section class="pane-left">
+            <!-- 共通寸法（サイズ & 重寸法） -->
+            <div class="common-size-card">
+                <div class="flex items-center gap-2">
+                    <span class="text-[14px] font-bold text-zinc-400">共通サイズ</span>
+                    <select id="shared-size" class="bg-zinc-800 text-white font-bold text-base px-2.5 py-0.5 rounded-lg border border-zinc-700 outline-none focus:border-amber-500" onchange="onSizeChange(this.value)">
+                        <option value="75">75</option>
+                        <option value="100" selected>100</option>
+                        <option value="125">125</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[14px] font-bold text-zinc-400">重寸法 (共通)</span>
+                    <span id="shared-d-val" class="text-base font-bold text-zinc-200 bg-black/40 px-2.5 py-0.5 rounded border border-zinc-800">40</span>
+                    <span class="text-[14px] text-zinc-500 font-bold">mm</span>
+                </div>
+            </div>
+
+            <!-- ドレン下 ブロック (紫) -->
+            <div class="elbow-card drain">
+                <div class="elbow-card-header">
+                    <span>ドレン下</span>
+                    <span class="text-[12px] text-purple-300 font-semibold" id="drain-formula-desc">ドレン下 + 吊り金物 - 15</span>
+                </div>
+                <div class="elbow-card-body">
+                    <div class="calc-cell" id="cell-d-core" onclick="focusInput('d-core')">
+                        <span class="input-label-left">ドレン下</span>
+                        <div id="d-core" class="input-value">0</div>
+                    </div>
+                    <div class="calc-cell" id="cell-d-extra" onclick="focusInput('d-extra')">
+                        <span class="input-label-left">吊り金物</span>
+                        <div id="d-extra" class="input-value">100</div>
+                    </div>
+                    <div class="result-strip" onclick="copyResult('d-result-val')">
+                        <span class="text-[12px] font-bold text-white/90">切寸</span>
+                        <div class="flex items-baseline gap-0.5">
+                            <span id="d-result-val" class="text-xl font-extrabold text-white">---</span>
+                            <span class="text-[12px] font-bold text-white/70">mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 縦エルボ ブロック -->
+            <div class="elbow-card vertical">
+                <div class="elbow-card-header">
+                    <span>縦エルボ</span>
+                    <span class="text-[12px] text-indigo-300 font-semibold">芯-柱 + (柱寸+足) + α</span>
+                </div>
+                <div class="elbow-card-body">
+                    <div class="calc-cell focused" id="cell-v-core" onclick="focusInput('v-core')">
+                        <span class="input-label-left">芯-柱寸法</span>
+                        <div id="v-core" class="input-value">0</div>
+                    </div>
+                    <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-plus')">
+                        <span class="input-label-left">柱寸+足</span>
+                        <div id="v-plus" class="input-value placeholder">㎜</div>
+                    </div>
+                    <div class="result-strip" onclick="copyResult('v-result-val')">
+                        <span class="text-[12px] font-bold text-white/90">切寸</span>
+                        <div class="flex items-baseline gap-0.5">
+                            <span id="v-result-val" class="text-xl font-extrabold text-white">---</span>
+                            <span class="text-[12px] font-bold text-white/70">mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 横エルボ ブロック -->
+            <div class="elbow-card horizontal">
+                <div class="elbow-card-header">
+                    <span>横エルボ</span>
+                    <span class="text-[12px] text-green-300 font-semibold">芯-柱 + (柱寸法 ÷ 2)</span>
+                </div>
+                <div class="elbow-card-body">
+                    <div class="calc-cell" id="cell-h-core" onclick="focusInput('h-core')">
+                        <span class="input-label-left">芯-柱寸法</span>
+                        <div id="h-core" class="input-value">0</div>
+                    </div>
+                    <div class="calc-cell" id="cell-h-extra" onclick="focusInput('h-extra')">
+                        <span class="input-label-left">+ 柱寸法</span>
+                        <div id="h-extra" class="input-value placeholder">柱寸法</div>
+                    </div>
+                    <div class="result-strip" onclick="copyResult('h-result-val')">
+                        <span class="text-[12px] font-bold text-white/90">切寸</span>
+                        <div class="flex items-baseline gap-0.5">
+                            <span id="h-result-val" class="text-xl font-extrabold text-white">---</span>
+                            <span class="text-[12px] font-bold text-white/70">mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 保存アクションボタン -->
+            <div class="btn-action-row">
+                <button class="btn-save-d" onclick="saveHistoryRecord('drain')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    ドレン保存
+                </button>
+                <button class="btn-save-v" onclick="saveHistoryRecord('vertical')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    縦エルボ保存
+                </button>
+                <button class="btn-save-h" onclick="saveHistoryRecord('horizontal')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    横エルボ保存
+                </button>
+            </div>
+
+            <!-- テンキー (3列) -->
+            <div class="keypad-container">
+                <button class="key-btn" onclick="pressKey('7')">7</button>
+                <button class="key-btn" onclick="pressKey('8')">8</button>
+                <button class="key-btn" onclick="pressKey('9')">9</button>
+
+                <button class="key-btn" onclick="pressKey('4')">4</button>
+                <button class="key-btn" onclick="pressKey('5')">5</button>
+                <button class="key-btn" onclick="pressKey('6')">6</button>
+
+                <button class="key-btn" onclick="pressKey('1')">1</button>
+                <button class="key-btn" onclick="pressKey('2')">2</button>
+                <button class="key-btn" onclick="pressKey('3')">3</button>
+
+                <button class="key-btn" onclick="pressKey('0')">0</button>
+                <button class="key-btn gray" onclick="pressKey('00')">00</button>
+                <button class="key-btn clear" onclick="pressKey('clear')">クリア</button>
+            </div>
+
+            <!-- 全入力データリセットボタン -->
+            <button class="btn-reset-inputs" onclick="openResetModal()">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                全入力データをリセット
+            </button>
+        </section>
+
+        <!-- 右側ペイン: 正面・側面 構造図 & 保存データ (履歴) -->
+        <section class="pane-right">
+            <!-- 構造図面エリア (添付画像を高精細SVGで再現) -->
+            <div class="diagram-card">
+                <div class="diagram-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    <span>寸法解説図</span>
+                </div>
+                
+                <div class="w-full bg-[#0e0e11] rounded-xl p-2 border border-zinc-800 flex justify-center">
+                    <svg viewBox="0 0 840 400" class="w-full h-auto max-h-[300px]" style="font-family: inherit;">
+                        <!-- 背景基準線 -->
+                        <line x1="30" y1="60" x2="380" y2="60" stroke="#888" stroke-width="2" />
+                        <line x1="460" y1="60" x2="810" y2="60" stroke="#888" stroke-width="2" />
+
+                        <!-- タイトル -->
+                        <text x="200" y="38" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">横エルボ</text>
+                        <text x="635" y="38" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">縦エルボ</text>
+
+                        <!-- ================= 正面 (横エルボ) ================= -->
+                        <!-- 柱 (実線) -->
+                        <line x1="80" y1="60" x2="80" y2="300" stroke="#ffffff" stroke-width="2" />
+                        <line x1="210" y1="60" x2="210" y2="300" stroke="#ffffff" stroke-width="2" />
+                        <text x="145" y="230" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">柱</text>
+
+                        <!-- 柱芯点線 -->
+                        <line x1="120" y1="60" x2="120" y2="360" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
+                        <line x1="175" y1="60" x2="175" y2="360" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
+
+                        <!-- 落とし口 -->
+                        <rect x="275" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
+                        <text x="294" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
+                        <line x1="294" y1="88" x2="294" y2="150" stroke="#ef4444" stroke-width="1.5" />
+
+                        <!-- 正面 寸法線 A (柱) -->
+                        <line x1="80" y1="115" x2="210" y2="115" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 88 110 L 80 115 L 88 120" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 202 110 L 210 115 L 202 120" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <text id="diag-h-a" x="145" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+
+                        <!-- 正面 寸法線 B (芯-柱) -->
+                        <line x1="210" y1="115" x2="294" y2="115" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 218 110 L 210 115 L 218 120" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 286 110 L 294 115 L 286 120" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <text id="diag-h-b" x="252" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+
+                        <!-- ================= 側面 ================= -->
+                        <!-- 柱 (実線) -->
+                        <line x1="510" y1="60" x2="510" y2="295" stroke="#ffffff" stroke-width="2" />
+                        <line x1="645" y1="60" x2="645" y2="295" stroke="#ffffff" stroke-width="2" />
+                        <text x="578" y="235" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">柱</text>
+
+                        <!-- H鋼梁形状 -->
+                        <line x1="535" y1="66" x2="615" y2="66" stroke="#ffffff" stroke-width="4" />
+                        <line x1="575" y1="66" x2="575" y2="155" stroke="#ffffff" stroke-width="3" />
+                        <line x1="535" y1="155" x2="615" y2="155" stroke="#ffffff" stroke-width="4" />
+
+                        <!-- 側面 足・アングル (グレー矩形) -->
+                        <rect x="445" y="235" width="65" height="12" fill="#3f3f46" stroke="#ffffff" stroke-width="1.5" />
+                        <line x1="445" y1="155" x2="445" y2="365" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
+                        <line x1="390" y1="155" x2="390" y2="365" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" />
+
+                        <!-- 側面 落とし口 -->
+                        <rect x="710" y="60" width="38" height="28" fill="#000" stroke="#ffffff" stroke-width="2" />
+                        <text x="729" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">落</text>
+                        <line x1="729" y1="88" x2="729" y2="215" stroke="#ef4444" stroke-width="1.5" />
+
+                        <!-- 側面 梁下寸法線 D -->
+                        <line x1="635" y1="155" x2="685" y2="155" stroke="#ef4444" stroke-width="1.2" />
+                        <line x1="665" y1="65" x2="665" y2="155" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 660 73 L 665 65 L 670 73" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 660 147 L 665 155 L 670 147" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <text id="diag-v-d" x="680" y="115" fill="#ef4444" font-size="18" font-weight="bold">D</text>
+
+                        <!-- 側面 寸法線 C (柱芯+足) -->
+                        <line x1="445" y1="215" x2="510" y2="215" stroke="#ef4444" stroke-width="2" />
+                        <line x1="445" y1="170" x2="445" y2="235" stroke="#ef4444" stroke-width="1.5" />
+                        <path d="M 453 210 L 445 215 L 453 220" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 502 210 L 510 215 L 502 220" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <text id="diag-v-c" x="477" y="200" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">C</text>
+
+                        <!-- 側面 寸法線 A (柱) -->
+                        <line x1="510" y1="185" x2="645" y2="185" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 518 180 L 510 185 L 518 190" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 637 180 L 645 185 L 637 190" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <text id="diag-v-a" x="578" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+
+                        <!-- 側面 寸法線 B (芯-柱) -->
+                        <line x1="645" y1="185" x2="729" y2="185" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 653 180 L 645 185 L 653 190" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <path d="M 721 180 L 729 185 L 721 190" fill="none" stroke="#ef4444" stroke-width="2" />
+                        <text id="diag-v-b" x="687" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 保存データ (履歴) エリア -->
+            <div class="history-card">
+                <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+                    <div class="flex items-center gap-2">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-[14px] font-bold text-zinc-200">保存データ (履歴)</span>
+                        <span id="history-count" class="text-[14px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">0件</span>
+                    </div>
+                    <button onclick="clearHistory()" class="text-[14px] text-red-400 hover:text-red-300 font-bold px-3 py-1 rounded bg-red-950/40 border border-red-900/60">
+                        履歴を消去
+                    </button>
+                </div>
+
+                <div class="history-list" id="unified-history-list">
+                    <!-- 動的挿入 -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 定数データ
+        const elbowData = {
+            75:  { d: 30, e: 88 },
+            100: { d: 40, e: 112 },
+            125: { d: 50, e: 140 }
+        };
+        const distXData = { 
+            "75": 45, 
+            "100": 57, 
+            "125": 70 
+        };
+
+        // 共通サイズごとのドレン引き寸法 (75=10, 100=15, 125=20)
+        const drainOffsets = {
+            "75": 10,
+            "100": 15,
+            "125": 20
+        };
+
+        const STORAGE_KEY = 'kyowa_ipad_unified_history_v1';
+        const INPUT_STORAGE_KEY = 'kyowa_ipad_inputs_v1';
+        const SIZE_STORAGE_KEY = 'kyowa_ipad_size_v1';
+
+        let histories = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+        // フォーカス中のインプット
+        let activeInputId = 'v-core';
+        let isOverwriteMode = true;
+
+        // 各フィールドの入力データ保持 (ローカルストレージから自動復元)
+        const savedInputs = JSON.parse(localStorage.getItem(INPUT_STORAGE_KEY)) || {};
+        const inputs = {
+            'd-core': savedInputs['d-core'] !== undefined ? savedInputs['d-core'] : '',      // ドレン下
+            'd-extra': savedInputs['d-extra'] !== undefined ? savedInputs['d-extra'] : '100', // 吊り金物 (初期値: 100)
+            'v-core': savedInputs['v-core'] !== undefined ? savedInputs['v-core'] : '',      // 縦エルボ: 芯-柱寸法
+            'v-plus': savedInputs['v-plus'] !== undefined ? savedInputs['v-plus'] : '',      // 縦エルボ: 柱寸+足
+            'h-core': savedInputs['h-core'] !== undefined ? savedInputs['h-core'] : '',      // 横エルボ: 芯-柱寸法
+            'h-extra': savedInputs['h-extra'] !== undefined ? savedInputs['h-extra'] : ''     // 横エルボ: 柱寸法
+        };
+
+        const placeholders = {
+            'd-core': '0',
+            'd-extra': '100',
+            'v-core': '0',
+            'v-plus': '㎜',
+            'h-core': '0',
+            'h-extra': '柱寸法'
+        };
+
+        // フォーカス切り替え
+        function focusInput(id) {
+            document.querySelectorAll('.calc-cell').forEach(el => el.classList.remove('focused'));
+            const targetCell = document.getElementById('cell-' + id);
+            if (targetCell) targetCell.classList.add('focused');
+            
+            activeInputId = id;
+            isOverwriteMode = true;
+        }
+
+        // キーパッド入力処理
+        function pressKey(key) {
+            let val = inputs[activeInputId] || '';
+
+            if (key === 'clear') {
+                val = '';
+                isOverwriteMode = false;
+            } else {
+                if (isOverwriteMode) {
+                    val = key;
+                    isOverwriteMode = false;
+                } else {
+                    val = (val === '0') ? key : val + key;
+                }
+            }
+
+            inputs[activeInputId] = val;
+            updateFieldDisplay(activeInputId, val);
+
+            // ローカルストレージに入力値を即時永続保存
+            saveInputsToStorage();
+
+            // 該当する計算を実行
+            if (activeInputId.startsWith('d-')) {
+                calcDrain();
+            } else if (activeInputId.startsWith('v-')) {
+                calcVertical();
+            } else if (activeInputId.startsWith('h-')) {
+                calcHorizontal();
+            }
+
+            // 図面のABCDラベルを連動更新
+            updateDiagramValues();
+        }
+
+        function saveInputsToStorage() {
+            try {
+                localStorage.setItem(INPUT_STORAGE_KEY, JSON.stringify(inputs));
+            } catch (e) {
+                console.warn('ローカルストレージ保存エラー:', e);
+            }
+        }
+
+        // 図面の ABCD テキストを左側の入力値で更新
+        function updateDiagramValues() {
+            // 横エルボの + 柱寸法
+            const hExtra = inputs['h-extra'];
+            // 横エルボの 芯-柱寸法
+            const hCore = inputs['h-core'];
+            // 縦エルボの 芯-柱寸法
+            const vCore = inputs['v-core'];
+            // 縦エルボの 柱寸+足
+            const vPlus = inputs['v-plus'];
+            // ドレン下の ドレン下
+            const dCore = inputs['d-core'];
+
+            // 1. 横エルボ・縦エルボの図の A = 横エルボの + 柱寸法 (1以上で表示)
+            const numHExtra = parseFloat(hExtra);
+            const aVal = (!isNaN(numHExtra) && numHExtra >= 1) ? formatNum(numHExtra) : 'A';
+            const diagHA = document.getElementById('diag-h-a');
+            const diagVA = document.getElementById('diag-v-a');
+            if (diagHA) diagHA.textContent = aVal;
+            if (diagVA) diagVA.textContent = aVal;
+
+            // 2. 横エルボの図の B = 横エルボの 芯-柱寸法 (1以上で表示)
+            const numHCore = parseFloat(hCore);
+            const hbVal = (!isNaN(numHCore) && numHCore >= 1) ? formatNum(numHCore) : 'B';
+            const diagHB = document.getElementById('diag-h-b');
+            if (diagHB) diagHB.textContent = hbVal;
+
+            // 3. 縦エルボの図の B = 縦エルボの 芯-柱寸法 (1以上で表示)
+            const numVCore = parseFloat(vCore);
+            const vbVal = (!isNaN(numVCore) && numVCore >= 1) ? formatNum(numVCore) : 'B';
+            const diagVB = document.getElementById('diag-v-b');
+            if (diagVB) diagVB.textContent = vbVal;
+
+            // 4. 縦エルボの図の C = 縦エルボの (柱寸+足 - (横エルボの + 柱寸法)) (1以上で表示、0やマイナスはC)
+            const diagVC = document.getElementById('diag-v-c');
+            if (diagVC) {
+                const hasVPlus = (vPlus !== '' && !isNaN(parseFloat(vPlus)));
+                const hasHExtra = (hExtra !== '' && !isNaN(parseFloat(hExtra)));
+                if (hasVPlus || hasHExtra) {
+                    const cCalc = (parseFloat(vPlus) || 0) - (parseFloat(hExtra) || 0);
+                    const roundedC = Math.round(cCalc * 10) / 10;
+                    // 1以上の場合のみ表示（マイナスや0は元の「C」を表示）
+                    diagVC.textContent = (roundedC >= 1) ? formatNum(roundedC) : 'C';
+                } else {
+                    diagVC.textContent = 'C';
+                }
+            }
+
+            // 5. 縦エルボの図の D = ドレン下の ドレン下 (1以上で表示)
+            const numDCore = parseFloat(dCore);
+            const dVal = (!isNaN(numDCore) && numDCore >= 1) ? formatNum(numDCore) : 'D';
+            const diagVD = document.getElementById('diag-v-d');
+            if (diagVD) diagVD.textContent = dVal;
+        }
+
+        // リセットモーダル制御
+        function openResetModal() {
+            const modal = document.getElementById('reset-modal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('reset-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        // 全入力データのリセット実行
+        function executeResetInputs() {
+            // 各入力フィールドのクリア（吊り金物は初期値100に戻す）
+            inputs['d-core'] = '';
+            inputs['d-extra'] = '100';
+            inputs['v-core'] = '';
+            inputs['v-plus'] = '';
+            inputs['h-core'] = '';
+            inputs['h-extra'] = '';
+
+            // ローカルストレージの入力値もリセット
+            saveInputsToStorage();
+
+            // 各セルの画面表示更新
+            Object.keys(inputs).forEach(key => {
+                updateFieldDisplay(key, inputs[key]);
+            });
+
+            // 計算結果の更新
+            calcDrain();
+            calcVertical();
+            calcHorizontal();
+
+            // 図面表示の更新
+            updateDiagramValues();
+
+            // 縦エルボにフォーカスを戻す
+            focusInput('v-core');
+
+            closeResetModal();
+            showToast("すべての入力データをリセットしました");
+        }
+
+        // ドレン下の計算: ドレン下 + 吊り金物 - 共通サイズ別値 (75=10, 100=15, 125=20)
+        function calcDrain() {
+            const size = document.getElementById('shared-size').value;
+            const sub = drainOffsets[size] !== undefined ? drainOffsets[size] : 15;
+
+            const c = parseFloat(inputs['d-core']);
+            const p = parseFloat(inputs['d-extra']) || 0;
+            const resEl = document.getElementById('d-result-val');
+
+            if (isNaN(c) || c === 0) {
+                resEl.innerText = "---";
+                return;
+            }
+
+            // 式: ドレン下 + 吊り金物 - 共通サイズ別引き寸
+            const res = Math.round((c + p - sub) * 10) / 10;
+            resEl.innerText = formatNum(res);
+        }
+
+        function updateFieldDisplay(id, val) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            const ph = placeholders[id] || '0';
+            if (val === '') {
+                el.innerText = ph;
+                if (ph !== '0') {
+                    el.classList.add('placeholder');
+                } else {
+                    el.classList.remove('placeholder');
+                    el.innerText = '0';
+                }
+            } else {
+                el.innerText = formatNum(val);
+                el.classList.remove('placeholder');
+            }
+        }
+
+        // サイズ変更時の連動（サイズと重寸法は共通）
+        function onSizeChange(sizeVal) {
+            const data = elbowData[sizeVal];
+            document.getElementById('shared-d-val').innerText = data.d;
+
+            // 選択されたサイズをローカルストレージに保存
+            try {
+                localStorage.setItem(SIZE_STORAGE_KEY, sizeVal);
+            } catch (e) {}
+
+            const sub = drainOffsets[sizeVal] !== undefined ? drainOffsets[sizeVal] : 15;
+            const descEl = document.getElementById('drain-formula-desc');
+            if (descEl) {
+                descEl.innerText = `ドレン下 + 吊り金物 - ${sub}`;
+            }
+
+            // 計算を再実行
+            calcDrain();
+            calcVertical();
+            calcHorizontal();
+        }
+
+        // 縦エルボの計算
+        function calcVertical() {
+            const size = document.getElementById('shared-size').value;
+            const { d, e } = elbowData[size];
+
+            const c = parseFloat(inputs['v-core']);
+            const p = parseFloat(inputs['v-plus']) || 0;
+            const resEl = document.getElementById('v-result-val');
+
+            if (isNaN(c) || c === 0) {
+                resEl.innerText = "---";
+                return;
+            }
+
+            // 縦エルボ: 「+」がある場合のみサイズ別追加値（75=45, 100=57, 125=70）を加算
+            let extraPlus = 0;
+            if (p > 0) {
+                extraPlus = distXData[size] || 0;
+            }
+
+            const actualCore = c + p + extraPlus;
+            const res = Math.round((actualCore - ((e * 2) - (d * 2))) * 10) / 10;
+            resEl.innerText = formatNum(res);
+        }
+
+        // 横エルボの計算
+        function calcHorizontal() {
+            const size = document.getElementById('shared-size').value;
+            const { d, e } = elbowData[size];
+
+            const c = parseFloat(inputs['h-core']);
+            const p = parseFloat(inputs['h-extra']) || 0;
+            const resEl = document.getElementById('h-result-val');
+
+            if (isNaN(c) || c === 0) {
+                resEl.innerText = "---";
+                return;
+            }
+
+            // 横エルボ: 芯-柱寸法 ＋ (柱寸法 / 2)
+            const actualCore = c + (p / 2);
+            const res = Math.round((actualCore - ((e * 2) - (d * 2))) * 10) / 10;
+            resEl.innerText = formatNum(res);
+        }
+
+        // 履歴保存処理
+        function saveHistoryRecord(type) {
+            const size = document.getElementById('shared-size').value;
+            let record = null;
+
+            if (type === 'drain') {
+                const res = document.getElementById('d-result-val').innerText;
+                const c = inputs['d-core'];
+                if (res === "---" || !c) {
+                    showToast("ドレン下の数値を入力してください");
+                    return;
+                }
+                const p = inputs['d-extra'];
+                const sub = drainOffsets[size] || 15;
+                record = {
+                    id: Date.now(),
+                    type: 'drain',
+                    typeLabel: 'ドレン下',
+                    size: size,
+                    desc: `ドレン下:${formatNum(c)}${p ? ` (+吊り金物:${formatNum(p)})` : ''} - ${sub}`,
+                    result: res,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    locked: false
+                };
+            } else if (type === 'vertical') {
+                const res = document.getElementById('v-result-val').innerText;
+                const c = inputs['v-core'];
+                if (res === "---" || !c) {
+                    showToast("縦エルボの数値を入力してください");
+                    return;
+                }
+                const p = inputs['v-plus'];
+                record = {
+                    id: Date.now(),
+                    type: 'vertical',
+                    typeLabel: '縦エルボ',
+                    size: size,
+                    desc: `芯-柱:${formatNum(c)}${p ? ` (+足:${formatNum(p)})` : ''}`,
+                    result: res,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    locked: false
+                };
+            } else {
+                const res = document.getElementById('h-result-val').innerText;
+                const c = inputs['h-core'];
+                if (res === "---" || !c) {
+                    showToast("横エルボの数値を入力してください");
+                    return;
+                }
+                const p = inputs['h-extra'];
+                record = {
+                    id: Date.now(),
+                    type: 'horizontal',
+                    typeLabel: '横エルボ',
+                    size: size,
+                    desc: `芯-柱:${formatNum(c)}${p ? ` (+柱:${formatNum(p)}/2)` : ''}`,
+                    result: res,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    locked: false
+                };
+            }
+
+            histories.unshift(record);
+            
+            // 最大50件制限（ロック付きは保護）
+            if (histories.length > 50) {
+                const unlockedIdx = histories.map(h => h.locked).lastIndexOf(false);
+                if (unlockedIdx !== -1) histories.splice(unlockedIdx, 1);
+            }
+
+            saveToStorage();
+            renderHistories();
+            showToast(`${record.typeLabel}のデータを保存しました`);
+            isOverwriteMode = true;
+        }
+
+        function toggleLock(id) {
+            const item = histories.find(x => x.id === id);
+            if (item) {
+                item.locked = !item.locked;
+                saveToStorage();
+                renderHistories();
+            }
+        }
+
+        function deleteHistory(id) {
+            histories = histories.filter(x => x.id !== id);
+            saveToStorage();
+            renderHistories();
+            showToast("削除しました");
+        }
+
+        function clearHistory() {
+            const lockedOnes = histories.filter(h => h.locked);
+            if (histories.length === lockedOnes.length) {
+                showToast("削除できる履歴がありません（ロック中）");
+                return;
+            }
+            histories = lockedOnes;
+            saveToStorage();
+            renderHistories();
+            showToast("未ロックの履歴を削除しました");
+        }
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(histories));
+        }
+
+        function renderHistories() {
+            const container = document.getElementById('unified-history-list');
+            const countEl = document.getElementById('history-count');
+            countEl.innerText = `${histories.length}件`;
+
+            if (histories.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center text-zinc-600 font-bold text-[14px]">
+                        保存されたデータはありません
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = histories.map(h => `
+                <div class="history-item ${h.locked ? 'is-locked' : ''}">
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleLock(${h.id})" class="p-1 rounded text-zinc-500 hover:text-amber-500">
+                            ${h.locked 
+                                ? '<svg width="20" height="20" fill="currentColor" class="text-amber-500" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>' 
+                                : '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
+                            }
+                        </button>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge-type ${h.type}">${h.typeLabel}</span>
+                                <span class="text-[14px] font-bold text-zinc-300">呼び径 ${h.size}</span>
+                                <span class="text-[14px] text-zinc-500">${h.time || ''}</span>
+                            </div>
+                            <div class="text-[14px] text-zinc-400 font-medium">${h.desc}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="text-right cursor-pointer" onclick="copyRaw('${h.result}')">
+                            <span class="text-xl font-extrabold text-white">${h.result}</span>
+                            <span class="text-[14px] text-zinc-400 font-bold ml-0.5">mm</span>
+                        </div>
+                        ${!h.locked ? `
+                        <button onclick="deleteHistory(${h.id})" class="p-1.5 text-zinc-500 hover:text-red-400">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                        ` : '<div class="w-[26px]"></div>'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // コピー & トースト機能
+        function copyResult(id) {
+            const val = document.getElementById(id).innerText;
+            copyRaw(val);
+        }
+
+        function copyRaw(val) {
+            if (!val || val === "---") return;
+            const t = document.createElement('textarea');
+            t.value = val.replace(/,/g, '');
+            document.body.appendChild(t);
+            t.select();
+            document.execCommand('copy');
+            document.body.removeChild(t);
+            showToast("切寸法をコピーしました: " + val + " mm");
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            if (t) {
+                t.innerText = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 1400);
+            }
+        }
+
+        function formatNum(num) {
+            if (!num && num !== 0) return "";
+            const parts = num.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+
+        function updateNetworkStatus() {
+            const badge = document.getElementById('connection-badge');
+            if (!badge) return;
+            if (navigator.onLine) {
+                badge.className = 'status-badge';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span><span>オンライン</span>';
+            } else {
+                badge.className = 'status-badge offline';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span><span>オフライン (保存済)</span>';
+            }
+        }
+
+        );
+            `;
+            const blob = new Blob([swCode], { type: 'text/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        }
+
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+
+        // 初期ロード
+        window.addEventListener('DOMContentLoaded', () => {
+            // 保存済みの共通サイズを復元
+            const savedSize = localStorage.getItem(SIZE_STORAGE_KEY);
+            if (savedSize && elbowData[savedSize]) {
+                const selectEl = document.getElementById('shared-size');
+                if (selectEl) selectEl.value = savedSize;
+            }
+
+            // 各セルの表示を入力値で初期化
+            Object.keys(inputs).forEach(key => {
+                updateFieldDisplay(key, inputs[key]);
+            });
+
+            onSizeChange(document.getElementById('shared-size').value);
+            renderHistories();
+            updateDiagramValues();
+            updateNetworkStatus();
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then((registration) => {
+                    console.log('ServiceWorker registration successful:', registration.scope);
+                }).catch((err) => {
+                    console.error('ServiceWorker registration failed:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
