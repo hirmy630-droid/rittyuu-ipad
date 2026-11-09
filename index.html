@@ -115,7 +115,7 @@
         .common-size-card {
             background: #18181b;
             border: 1px solid var(--ios-border);
-            border-radius: 12px;
+            border-radius: 0px;
             padding: 6px 12px;
             display: flex;
             align-items: center;
@@ -129,7 +129,7 @@
             font-weight: 800;
             font-size: 17px;
             padding: 2px 14px;
-            border-radius: 8px;
+            border-radius: 0px;
             border: 1px solid #44444a;
             outline: none;
             cursor: pointer;
@@ -144,7 +144,7 @@
         .elbow-card {
             background: var(--ios-panel);
             border: 1px solid var(--ios-border);
-            border-radius: 12px;
+            border-radius: 0px;
             overflow: hidden;
             flex-shrink: 0;
             display: flex;
@@ -179,7 +179,7 @@
         .calc-cell-hdr {
             background: #18181c;
             border: 1px solid #3a3a40;
-            border-radius: 6px;
+            border-radius: 0px;
             height: 24px;
             padding: 0 8px;
             display: inline-flex;
@@ -229,6 +229,7 @@
             position: relative;
             cursor: pointer;
             transition: background 0.15s;
+            border-radius: 0px;
         }
 
         .calc-cell.focused {
@@ -573,7 +574,6 @@
         <div class="flex items-center gap-3">
             <span class="text-lg font-bold tracking-tight text-white">川口立駐</span>
             <span class="pipe-spec-badge">パイプ径100㎜</span>
-            <span class="text-[12px] font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">iPad Layout</span>
             <span id="connection-badge" class="status-badge">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
                 <span>オンライン</span>
@@ -642,7 +642,7 @@
                     </div>
                     <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-leg')">
                         <span class="input-label-left">柱寸+足</span>
-                        <div id="v-plus" class="input-value text-indigo-300 placeholder">柱寸+足</div>
+                        <div id="v-plus" class="input-value text-indigo-300 placeholder">0</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('v-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -667,7 +667,7 @@
                     </div>
                     <div class="calc-cell" id="cell-h-extra" onclick="focusInput('h-extra')">
                         <span class="input-label-left">柱寸法</span>
-                        <div id="h-extra" class="input-value placeholder">柱寸法</div>
+                        <div id="h-extra" class="input-value placeholder">0</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('h-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -822,9 +822,9 @@
             'd-extra': '0',
             'v-core': '0',
             'v-leg': '0',
-            'v-plus': '柱寸+足',
+            'v-plus': '0',
             'h-core': '0',
-            'h-extra': '柱寸法'
+            'h-extra': '0'
         };
 
         let histories = [];
@@ -1291,7 +1291,7 @@
                 inputs['v-plus'] = '';
                 const plusEl = document.getElementById('v-plus');
                 if (plusEl) {
-                    plusEl.innerText = '柱寸+足';
+                    plusEl.innerText = '0';
                     plusEl.classList.add('placeholder');
                 }
             }
