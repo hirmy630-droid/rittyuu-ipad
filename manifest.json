@@ -1,8 +1,8 @@
 {
   "id": "tachu-elbow-ipad-v1",
-  "name": "立駐エルボ",
-  "short_name": "立駐エルボ",
-  "description": "立駐エルボ計算 for iPad PWA",
+  "name": "川口立駐",
+  "short_name": "川口立駐",
+  "description": "川口立駐 エルボ計算 for iPad PWA",
   "lang": "ja",
   "start_url": "./index.html?pwa=1",
   "scope": "./",

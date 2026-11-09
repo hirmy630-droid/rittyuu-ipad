@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>立駐エルボ (iPad版)</title>
+    <title>川口立駐 (iPad版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -45,7 +45,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* アプリ共通ヘッダー */
         .app-header {
             padding: 10px 20px;
             display: flex;
@@ -56,7 +55,20 @@
             flex-shrink: 0;
         }
 
-        /* 2カラム分割グリッド (iPad対応) */
+        .pipe-spec-badge {
+            font-size: 14px;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 2px 10px;
+            border-radius: 6px;
+            line-height: 1.3;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+        }
+
         .ipad-workspace {
             display: grid;
             grid-template-columns: 1fr;
@@ -100,19 +112,35 @@
             height: 100%;
         }
 
-        /* 共通サイズバナー */
         .common-size-card {
             background: #18181b;
             border: 1px solid var(--ios-border);
             border-radius: 12px;
-            padding: 5px 12px;
+            padding: 6px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
         }
 
-        /* エルボブロック */
+        .slot-select-box {
+            background: #242428;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 17px;
+            padding: 2px 14px;
+            border-radius: 8px;
+            border: 1px solid #44444a;
+            outline: none;
+            cursor: pointer;
+            direction: rtl;
+        }
+        .slot-select-box option {
+            direction: ltr;
+            background: #1c1c1e;
+            color: #ffffff;
+        }
+
         .elbow-card {
             background: var(--ios-panel);
             border: 1px solid var(--ios-border);
@@ -124,7 +152,7 @@
         }
 
         .elbow-card-header {
-            padding: 3px 12px;
+            padding: 4px 12px;
             font-size: 13px;
             font-weight: 700;
             display: flex;
@@ -148,7 +176,6 @@
             color: #72f085;
         }
 
-        /* ヘッダー行内の「足」入力セル */
         .calc-cell-hdr {
             background: #18181c;
             border: 1px solid #3a3a40;
@@ -167,7 +194,7 @@
             box-shadow: 0 0 0 1.5px var(--ios-orange);
         }
         .calc-cell-hdr .hdr-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #a1a1a6;
         }
@@ -179,13 +206,12 @@
             text-align: right;
         }
         .calc-cell-hdr .hdr-val.placeholder {
-            color: #ef4444 !important;
-            font-weight: 800;
+            color: var(--label-gray) !important;
+            font-weight: 600;
             font-size: 13px;
-            opacity: 0.85;
+            opacity: 0.9;
         }
 
-        /* 入力と切寸法を横一列に統合したボディ */
         .elbow-card-body {
             display: grid;
             grid-template-columns: 1fr 1fr 135px;
@@ -227,11 +253,10 @@
         }
 
         .input-value.placeholder {
-            font-size: 15px;
-            font-weight: 800;
-            color: #ef4444 !important;
-            opacity: 0.85;
-            letter-spacing: 0.5px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--label-gray) !important;
+            opacity: 0.9;
         }
 
         .result-strip {
@@ -249,7 +274,6 @@
         .elbow-card.vertical .result-strip { background: var(--accent-vertical); }
         .elbow-card.horizontal .result-strip { background: #248a3d; }
 
-        /* キーパッド */
         .keypad-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -261,14 +285,14 @@
             overflow: hidden;
             border: 1px solid var(--ios-border);
             flex: 1;
-            min-height: 220px;
+            min-height: 200px;
         }
 
         .key-btn {
             background: #1c1c1e;
             color: white;
             height: 100%;
-            min-height: 52px;
+            min-height: 48px;
             font-size: 22px;
             font-weight: 600;
             display: flex;
@@ -281,15 +305,61 @@
         .key-btn.gray { background: #2c2c2e; color: var(--ios-silver); font-size: 16px; }
         .key-btn.clear { background: #3a3a3e; color: #ff453a; font-size: 16px; font-weight: 700; }
 
-        /* リセットボタン */
-        .btn-reset-inputs {
-            margin-top: 4px;
+        .btn-action-row {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+            gap: 5px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .btn-save-master {
             height: 36px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            background: var(--ios-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: filter 0.15s;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(255, 159, 10, 0.25);
+        }
+        .btn-save-master:active { filter: brightness(0.85); }
+
+        .btn-save-d, .btn-save-v, .btn-save-h {
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: filter 0.15s;
+            user-select: none;
+        }
+        .btn-save-d { background: var(--accent-drain); opacity: 0.9; }
+        .btn-save-v { background: var(--accent-vertical); opacity: 0.9; }
+        .btn-save-h { background: #28a745; opacity: 0.9; }
+        .btn-save-d:active, .btn-save-v:active, .btn-save-h:active { filter: brightness(0.85); }
+
+        .btn-reset-inputs {
+            margin-top: 3px;
+            height: 32px;
             background: #201a1c;
             border: 1px solid #4a2428;
             color: #ff6b6b;
-            border-radius: 10px;
-            font-size: 13px;
+            border-radius: 9px;
+            font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -304,7 +374,6 @@
             border-color: #ff453a;
         }
 
-        /* 確認モーダル */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -338,35 +407,6 @@
             transform: scale(1);
         }
 
-        .btn-action-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
-            margin-top: 2px;
-            flex-shrink: 0;
-        }
-
-        .btn-save-d, .btn-save-v, .btn-save-h {
-            height: 38px;
-            border: none;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: filter 0.15s;
-            user-select: none;
-        }
-        .btn-save-d { background: var(--accent-drain); }
-        .btn-save-v { background: var(--accent-vertical); }
-        .btn-save-h { background: #28a745; }
-        .btn-save-d:active, .btn-save-v:active, .btn-save-h:active { filter: brightness(0.85); }
-
-        /* 図面表示カード */
         .diagram-card {
             background: #151518;
             border: 1px solid var(--ios-border);
@@ -391,7 +431,6 @@
             gap: 8px;
         }
 
-        /* 左右反転ボタンスタイル */
         .btn-flip-diagram {
             background: #27272a;
             border: 1px solid #3f3f46;
@@ -418,7 +457,6 @@
             color: #93c5fd;
         }
 
-        /* 履歴リストエリア */
         .history-card {
             background: #151518;
             border: 1px solid var(--ios-border);
@@ -433,7 +471,7 @@
         .history-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             margin-top: 10px;
             overflow-y: auto;
             max-height: 480px;
@@ -443,7 +481,7 @@
             background: #1c1c1f;
             border-radius: 12px;
             border: 1px solid #2a2a2e;
-            padding: 9px 12px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -456,37 +494,15 @@
         }
 
         .badge-type {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 6px;
+            padding: 2px 6px;
+            border-radius: 5px;
             display: inline-block;
         }
         .badge-type.drain { background: rgba(175, 82, 222, 0.25); color: #d896ff; border: 1px solid rgba(175, 82, 222, 0.4); }
         .badge-type.vertical { background: rgba(94, 92, 230, 0.25); color: #b4b2ff; border: 1px solid rgba(94, 92, 230, 0.4); }
         .badge-type.horizontal { background: rgba(50, 215, 75, 0.2); color: #8ef79e; border: 1px solid rgba(50, 215, 75, 0.35); }
-
-        .badge-no {
-            font-size: 12px;
-            font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 6px;
-            background: #27272a;
-            color: #fbbf24;
-            border: 1px solid #3f3f46;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.15s;
-        }
-        .badge-no:hover {
-            background: #3f3f46;
-            border-color: #f59e0b;
-        }
-        .badge-no:active {
-            transform: scale(0.95);
-        }
 
         #toast {
             position: fixed;
@@ -506,6 +522,7 @@
             transition: opacity 0.2s, transform 0.2s;
             z-index: 9999;
             box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            white-space: nowrap;
         }
         #toast.show {
             opacity: 1;
@@ -524,18 +541,7 @@
             color: #4ade80;
             border: 1px solid #28542c;
         }
-        .status-badge.offline {
-            background: #2d1e13;
-            color: #fb923c;
-            border-color: #5c3417;
-        }
     </style>
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" type="image/png" href="./icon-192.png">
-    <link rel="apple-touch-icon" href="./icon-180.png">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -547,9 +553,9 @@
             <div class="w-12 h-12 rounded-full bg-red-950/60 border border-red-800/80 text-red-400 mx-auto flex items-center justify-center mb-3">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             </div>
-            <h3 class="text-base font-bold text-white mb-1">入力データをリセット</h3>
+            <h3 class="text-base font-bold text-white mb-1">現在の番号の数値をリセット</h3>
             <p class="text-[13px] text-zinc-400 mb-4 leading-relaxed">
-                すべての入力数値をクリアします。<br><span class="text-xs text-zinc-500">（保存済みの履歴データは残ります）</span>
+                番号 <span id="reset-slot-num" class="text-orange-400 font-bold">1</span> の入力数値をクリアします。<br><span class="text-xs text-zinc-500">（保存済みの履歴データは残ります）</span>
             </p>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="closeResetModal()" class="h-10 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold rounded-xl text-[13px]">
@@ -562,34 +568,11 @@
         </div>
     </div>
 
-    <!-- 履歴番号・柱記号 編集モーダル -->
-    <div id="number-edit-modal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="w-12 h-12 rounded-full bg-amber-950/60 border border-amber-700/80 text-amber-400 mx-auto flex items-center justify-center mb-3">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-            </div>
-            <h3 class="text-base font-bold text-white mb-1" id="edit-no-title">番号を変更</h3>
-            <p class="text-[13px] text-zinc-400 mb-3 leading-relaxed">
-                番号や柱番号・通り芯記号を入力してください
-            </p>
-            <div class="mb-4">
-                <input type="text" id="edit-no-input" maxlength="12" class="w-full bg-black/60 border border-zinc-700 focus:border-amber-500 rounded-xl text-center text-xl font-extrabold text-amber-400 py-2 outline-none" placeholder="例: 1, 2, C-3">
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="closeNumberEditModal()" class="h-10 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold rounded-xl text-[13px]">
-                    キャンセル
-                </button>
-                <button onclick="executeSaveNumber()" class="h-10 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-[13px]">
-                    変更を保存
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- アプリ上部ヘッダー -->
     <header class="app-header">
         <div class="flex items-center gap-3">
-            <span class="text-lg font-bold tracking-tight text-white">立駐エルボ計算</span>
+            <span class="text-lg font-bold tracking-tight text-white">川口立駐</span>
+            <span class="pipe-spec-badge">パイプ径100㎜</span>
             <span class="text-[12px] font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">iPad Layout</span>
             <span id="connection-badge" class="status-badge">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
@@ -601,22 +584,16 @@
 
     <!-- iPad 2カラム レイアウト -->
     <main class="ipad-workspace">
-        
-        <!-- 左側ペイン: 計算入力 & キーパッド -->
         <section class="pane-left">
-            <!-- 共通寸法（サイズ & 重寸法） -->
             <div class="common-size-card">
                 <div class="flex items-center gap-2">
-                    <span class="text-[13px] font-bold text-zinc-400">共通サイズ</span>
-                    <select id="shared-size" class="bg-zinc-800 text-white font-bold text-sm px-2 py-0.5 rounded-lg border border-zinc-700 outline-none focus:border-amber-500" onchange="onSizeChange(this.value)">
-                        <option value="75">75</option>
-                        <option value="100" selected>100</option>
-                        <option value="125">125</option>
+                    <span class="text-[13px] font-bold text-zinc-300">番号 ▼</span>
+                    <select id="shared-slot" class="slot-select-box" onchange="changeSlot(this.value)">
                     </select>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-[13px] font-bold text-zinc-400">重寸法 (共通)</span>
-                    <span id="shared-d-val" class="text-sm font-bold text-zinc-200 bg-black/40 px-2 py-0.5 rounded border border-zinc-800">40</span>
+                    <span class="text-[13px] font-bold text-zinc-400">重寸法 (固定)</span>
+                    <span class="text-sm font-bold text-zinc-200 bg-black/40 px-2.5 py-0.5 rounded border border-zinc-800">40</span>
                     <span class="text-[12px] text-zinc-500 font-bold">mm</span>
                 </div>
             </div>
@@ -625,16 +602,16 @@
             <div class="elbow-card drain">
                 <div class="elbow-card-header">
                     <span>ドレン下</span>
-                    <span class="text-[12px] text-purple-300 font-semibold" id="drain-formula-desc">ドレン下 + 吊り金物 - 15</span>
+                    <span class="text-[12px] text-purple-300 font-semibold">ドレン下 + 吊金具 - 15</span>
                 </div>
                 <div class="elbow-card-body">
                     <div class="calc-cell" id="cell-d-core" onclick="focusInput('d-core')">
                         <span class="input-label-left">ドレン下</span>
-                        <div id="d-core" class="input-value placeholder">D</div>
+                        <div id="d-core" class="input-value placeholder">H下端</div>
                     </div>
                     <div class="calc-cell" id="cell-d-extra" onclick="focusInput('d-extra')">
-                        <span class="input-label-left">吊り金物</span>
-                        <div id="d-extra" class="input-value placeholder">100</div>
+                        <span class="input-label-left">吊金具</span>
+                        <div id="d-extra" class="input-value">0</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('d-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -653,19 +630,19 @@
                         <span>縦エルボ</span>
                         <div class="calc-cell-hdr" id="cell-v-leg" onclick="focusInput('v-leg')">
                             <span class="hdr-label">足</span>
-                            <div id="v-leg" class="hdr-val placeholder">C</div>
+                            <div id="v-leg" class="hdr-val placeholder">0</div>
                         </div>
                     </div>
-                    <span class="text-[12px] text-indigo-300 font-semibold" id="v-formula-desc">芯-柱 + (柱寸+足) + α</span>
+                    <span class="text-[12px] text-indigo-300 font-semibold">芯-柱 + (柱寸+足) + 57</span>
                 </div>
                 <div class="elbow-card-body">
                     <div class="calc-cell focused" id="cell-v-core" onclick="focusInput('v-core')">
                         <span class="input-label-left">芯-柱寸法</span>
-                        <div id="v-core" class="input-value placeholder">B</div>
+                        <div id="v-core" class="input-value">0</div>
                     </div>
                     <div class="calc-cell" id="cell-v-plus" onclick="focusInput('v-leg')">
                         <span class="input-label-left">柱寸+足</span>
-                        <div id="v-plus" class="input-value text-indigo-300 placeholder">---</div>
+                        <div id="v-plus" class="input-value text-indigo-300 placeholder">柱寸+足</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('v-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -686,11 +663,11 @@
                 <div class="elbow-card-body">
                     <div class="calc-cell" id="cell-h-core" onclick="focusInput('h-core')">
                         <span class="input-label-left">芯-柱寸法</span>
-                        <div id="h-core" class="input-value placeholder">B</div>
+                        <div id="h-core" class="input-value">0</div>
                     </div>
                     <div class="calc-cell" id="cell-h-extra" onclick="focusInput('h-extra')">
-                        <span class="input-label-left">+ 柱寸法</span>
-                        <div id="h-extra" class="input-value placeholder">A</div>
+                        <span class="input-label-left">柱寸法</span>
+                        <div id="h-extra" class="input-value placeholder">柱寸法</div>
                     </div>
                     <div class="result-strip" onclick="copyResult('h-result-val')">
                         <span class="text-[12px] font-bold text-white/90">切寸</span>
@@ -704,56 +681,45 @@
 
             <!-- 保存アクションボタン -->
             <div class="btn-action-row">
-                <button class="btn-save-d" onclick="saveHistoryRecord('drain')">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                    ドレン保存
+                <button class="btn-save-master" onclick="saveAllRecords()">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    全保存
                 </button>
-                <button class="btn-save-v" onclick="saveHistoryRecord('vertical')">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                    縦エルボ保存
-                </button>
-                <button class="btn-save-h" onclick="saveHistoryRecord('horizontal')">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                    横エルボ保存
-                </button>
+                <button class="btn-save-d" onclick="saveHistoryRecord('drain')">ドレン保存</button>
+                <button class="btn-save-v" onclick="saveHistoryRecord('vertical')">縦エルボ保存</button>
+                <button class="btn-save-h" onclick="saveHistoryRecord('horizontal')">横エルボ保存</button>
             </div>
 
-            <!-- テンキー (3列) -->
+            <!-- テンキー -->
             <div class="keypad-container">
                 <button class="key-btn" onclick="pressKey('7')">7</button>
                 <button class="key-btn" onclick="pressKey('8')">8</button>
                 <button class="key-btn" onclick="pressKey('9')">9</button>
-
                 <button class="key-btn" onclick="pressKey('4')">4</button>
                 <button class="key-btn" onclick="pressKey('5')">5</button>
                 <button class="key-btn" onclick="pressKey('6')">6</button>
-
                 <button class="key-btn" onclick="pressKey('1')">1</button>
                 <button class="key-btn" onclick="pressKey('2')">2</button>
                 <button class="key-btn" onclick="pressKey('3')">3</button>
-
                 <button class="key-btn" onclick="pressKey('0')">0</button>
                 <button class="key-btn gray" onclick="pressKey('00')">00</button>
                 <button class="key-btn clear" onclick="pressKey('clear')">クリア</button>
             </div>
 
-            <!-- 全入力データリセットボタン -->
             <button class="btn-reset-inputs" onclick="openResetModal()">
-                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                全入力データをリセット
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                この番号の入力をリセット
             </button>
         </section>
 
-        <!-- 右側ペイン: 正面・側面 構造図 & 保存データ (履歴) -->
+        <!-- 右側ペイン: 構造図 & 保存データ (履歴) -->
         <section class="pane-right">
-            <!-- 構造図面エリア -->
             <div class="diagram-card">
                 <div class="diagram-title-row">
                     <div class="diagram-title">
                         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                        <span>寸法解説図</span>
+                        <span>寸法解説図 (100㎜固定)</span>
                     </div>
-                    <!-- 左右反転ボタン -->
                     <button id="flip-btn" class="btn-flip-diagram" onclick="toggleDiagramFlip()">
                         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
@@ -764,12 +730,10 @@
                 
                 <div class="w-full bg-[#0e0e11] rounded-xl p-2 border border-zinc-800 flex justify-center">
                     <svg id="diagram-svg" viewBox="0 0 840 400" class="w-full h-auto max-h-[290px]" style="font-family: inherit;">
-                        <!-- renderDiagram() で動的描画 -->
                     </svg>
                 </div>
             </div>
 
-            <!-- 保存データ (履歴) エリア -->
             <div class="history-card">
                 <div class="flex items-center justify-between pb-2.5 border-b border-zinc-800">
                     <div class="flex items-center gap-2">
@@ -783,76 +747,149 @@
                 </div>
 
                 <div class="history-list" id="unified-history-list">
-                    <!-- 動的挿入 -->
                 </div>
             </div>
         </section>
     </main>
 
     <script>
-        // 定数データ
-        const elbowData = {
-            75:  { d: 30, e: 88 },
-            100: { d: 40, e: 112 },
-            125: { d: 50, e: 140 }
-        };
-        const distXData = { 
-            "75": 45, 
-            "100": 57, 
-            "125": 70 
+        const CONST_100 = {
+            d: 40,
+            e: 112,
+            distX: 57,
+            drainSub: 15
         };
 
-        // 共通サイズごとのドレン引き寸法 (75=10, 100=15, 125=20)
-        const drainOffsets = {
-            "75": 10,
-            "100": 15,
-            "125": 20
+        const STORAGE_KEY = 'kyowa_ipad_unified_history_v100';
+        const SLOT_DATA_KEY = 'kyowa_ipad_slots_v100';
+        const CURRENT_SLOT_KEY = 'kyowa_ipad_current_slot_v100';
+        const FLIP_STORAGE_KEY = 'kyowa_ipad_diagram_flipped_v100';
+        const SECONDARY_DEFAULTS_KEY = 'kyowa_ipad_sec_defaults_v100';
+
+        let secondaryDefaults = {
+            'd-extra': '0',
+            'v-leg': '',
+            'h-extra': ''
         };
 
-        const STORAGE_KEY = 'kyowa_ipad_unified_history_v1';
-        const INPUT_STORAGE_KEY = 'kyowa_ipad_inputs_v1';
-        const SIZE_STORAGE_KEY = 'kyowa_ipad_size_v1';
-        const FLIP_STORAGE_KEY = 'kyowa_ipad_diagram_flipped_v1';
-
-        // 安全な JSON パース関数 (SyntaxError防止)
-        function safeJsonParse(raw, fallback) {
-            if (!raw || typeof raw !== 'string') return fallback;
-            const trimmed = raw.trim();
-            if (trimmed === '' || trimmed === 'undefined' || trimmed === 'null') return fallback;
-            try {
-                return JSON.parse(trimmed);
-            } catch (err) {
-                console.warn('JSONパーススキップ:', err);
-                return fallback;
+        try {
+            const savedSec = JSON.parse(localStorage.getItem(SECONDARY_DEFAULTS_KEY));
+            if (savedSec && typeof savedSec === 'object') {
+                secondaryDefaults = Object.assign(secondaryDefaults, savedSec);
             }
+        } catch (e) {}
+
+        let currentSlot = 1;
+        try {
+            const savedSlot = parseInt(localStorage.getItem(CURRENT_SLOT_KEY), 10);
+            if (savedSlot >= 1 && savedSlot <= 22) {
+                currentSlot = savedSlot;
+            }
+        } catch (e) {}
+
+        function createEmptySlot() {
+            return {
+                'd-core': '',
+                'd-extra': secondaryDefaults['d-extra'] || '0',
+                'v-core': '',
+                'v-leg': secondaryDefaults['v-leg'] || '',
+                'v-plus': '',
+                'h-core': '',
+                'h-extra': secondaryDefaults['h-extra'] || ''
+            };
         }
 
-        let histories = safeJsonParse(localStorage.getItem(STORAGE_KEY), []);
-        let isDiagramFlipped = localStorage.getItem(FLIP_STORAGE_KEY) === 'true';
+        let slotData = {};
+        for (let i = 1; i <= 22; i++) {
+            slotData[i] = createEmptySlot();
+        }
 
+        try {
+            const savedSlots = JSON.parse(localStorage.getItem(SLOT_DATA_KEY));
+            if (savedSlots && typeof savedSlots === 'object') {
+                for (let i = 1; i <= 22; i++) {
+                    if (savedSlots[i]) {
+                        slotData[i] = Object.assign(createEmptySlot(), savedSlots[i]);
+                    }
+                }
+            }
+        } catch (e) {}
+
+        const inputs = Object.assign({}, slotData[currentSlot]);
+
+        const placeholders = {
+            'd-core': 'H下端',
+            'd-extra': '0',
+            'v-core': '0',
+            'v-leg': '0',
+            'v-plus': '柱寸+足',
+            'h-core': '0',
+            'h-extra': '柱寸法'
+        };
+
+        let histories = [];
+        try {
+            histories = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        } catch (e) {
+            histories = [];
+        }
+
+        let isDiagramFlipped = localStorage.getItem(FLIP_STORAGE_KEY) === 'true';
         let activeInputId = 'v-core';
         let isOverwriteMode = true;
 
-        const savedInputs = safeJsonParse(localStorage.getItem(INPUT_STORAGE_KEY), {});
-        const inputs = {
-            'd-core': (savedInputs && savedInputs['d-core'] !== undefined) ? savedInputs['d-core'] : '',
-            'd-extra': (savedInputs && savedInputs['d-extra'] !== undefined) ? savedInputs['d-extra'] : '',
-            'v-core': (savedInputs && savedInputs['v-core'] !== undefined) ? savedInputs['v-core'] : '',
-            'v-leg': (savedInputs && savedInputs['v-leg'] !== undefined) ? savedInputs['v-leg'] : '',
-            'v-plus': (savedInputs && savedInputs['v-plus'] !== undefined) ? savedInputs['v-plus'] : '',
-            'h-core': (savedInputs && savedInputs['h-core'] !== undefined) ? savedInputs['h-core'] : '',
-            'h-extra': (savedInputs && savedInputs['h-extra'] !== undefined) ? savedInputs['h-extra'] : ''
-        };
+        function initSlotSelector() {
+            const sel = document.getElementById('shared-slot');
+            if (!sel) return;
+            sel.innerHTML = '';
+            for (let i = 1; i <= 22; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = i;
+                if (i === currentSlot) opt.selected = true;
+                sel.appendChild(opt);
+            }
+        }
 
-        const placeholders = {
-            'd-core': 'D',
-            'd-extra': '100',
-            'v-core': 'B',
-            'v-leg': 'C',
-            'v-plus': '---',
-            'h-core': 'B',
-            'h-extra': 'A'
-        };
+        function changeSlot(val) {
+            const newSlot = parseInt(val, 10);
+            if (isNaN(newSlot) || newSlot < 1 || newSlot > 22) return;
+
+            slotData[currentSlot] = Object.assign({}, inputs);
+            try {
+                localStorage.setItem(SLOT_DATA_KEY, JSON.stringify(slotData));
+            } catch (e) {}
+
+            currentSlot = newSlot;
+            try {
+                localStorage.setItem(CURRENT_SLOT_KEY, currentSlot);
+            } catch (e) {}
+
+            const targetSelect = document.getElementById('shared-slot');
+            if (targetSelect) targetSelect.value = currentSlot;
+
+            const targetData = slotData[currentSlot] || createEmptySlot();
+            Object.keys(inputs).forEach(key => {
+                inputs[key] = targetData[key] || '';
+            });
+
+            ['d-extra', 'v-leg', 'h-extra'].forEach(field => {
+                if (!inputs[field] && secondaryDefaults[field]) {
+                    inputs[field] = secondaryDefaults[field];
+                }
+            });
+
+            Object.keys(inputs).forEach(key => {
+                updateFieldDisplay(key, inputs[key]);
+            });
+
+            calcDrain();
+            calcHorizontal();
+            calcVertical();
+            updateDiagramValues();
+
+            showToast(`番号: ${currentSlot} に切替`);
+        }
 
         function focusInput(id) {
             document.querySelectorAll('.calc-cell, .calc-cell-hdr').forEach(el => el.classList.remove('focused'));
@@ -882,6 +919,14 @@
             }
 
             inputs[activeInputId] = val;
+
+            if (['d-extra', 'v-leg', 'h-extra'].includes(activeInputId)) {
+                secondaryDefaults[activeInputId] = val;
+                try {
+                    localStorage.setItem(SECONDARY_DEFAULTS_KEY, JSON.stringify(secondaryDefaults));
+                } catch (e) {}
+            }
+
             updateFieldDisplay(activeInputId, val);
             saveInputsToStorage();
 
@@ -891,25 +936,17 @@
                 calcVertical();
             } else if (activeInputId.startsWith('h-')) {
                 calcHorizontal();
-                calcVertical(); // 横の柱寸法が変わると縦の合算も変わる
+                calcVertical();
             }
 
             updateDiagramValues();
         }
 
-        // 物理キーボード対応 (iPad Magic Keyboard / PC)
         window.addEventListener('keydown', (e) => {
-            // モーダル表示中はモーダル側で処理
             const resetModal = document.getElementById('reset-modal');
-            const numModal = document.getElementById('number-edit-modal');
             if (resetModal && resetModal.classList.contains('active')) {
                 if (e.key === 'Escape') closeResetModal();
                 if (e.key === 'Enter') executeResetInputs();
-                return;
-            }
-            if (numModal && numModal.classList.contains('active')) {
-                if (e.key === 'Escape') closeNumberEditModal();
-                if (e.key === 'Enter') executeSaveNumber();
                 return;
             }
 
@@ -928,11 +965,10 @@
         });
 
         function saveInputsToStorage() {
+            slotData[currentSlot] = Object.assign({}, inputs);
             try {
-                localStorage.setItem(INPUT_STORAGE_KEY, JSON.stringify(inputs));
-            } catch (e) {
-                console.warn('入力値保存エラー:', e);
-            }
+                localStorage.setItem(SLOT_DATA_KEY, JSON.stringify(slotData));
+            } catch (e) {}
         }
 
         function toggleDiagramFlip() {
@@ -983,14 +1019,13 @@
                     <line x1="80" y1="115" x2="210" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 88 110 L 80 115 L 88 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 202 110 L 210 115 L 202 120" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-h-a" x="145" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+                    <text id="diag-h-a" x="145" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">柱寸</text>
 
                     <line x1="210" y1="115" x2="294" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 218 110 L 210 115 L 218 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 286 110 L 294 115 L 286 120" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-h-b" x="252" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+                    <text id="diag-h-b" x="252" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">芯-柱</text>
 
-                    <!-- 横エルボ 切寸法線 (緑) -->
                     <line x1="145" y1="190" x2="294" y2="190" stroke="#32d74b" stroke-width="2.2" />
                     <path d="M 153 185 L 145 190 L 153 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
                     <path d="M 286 185 L 294 190 L 286 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
@@ -1016,25 +1051,24 @@
                     <line x1="665" y1="65" x2="665" y2="155" stroke="#ef4444" stroke-width="2" />
                     <path d="M 660 73 L 665 65 L 670 73" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 660 147 L 665 155 L 670 147" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-d" x="680" y="115" fill="#ef4444" font-size="18" font-weight="bold">D</text>
+                    <text id="diag-v-d" x="680" y="115" fill="#ef4444" font-size="18" font-weight="bold">40</text>
 
                     <line x1="445" y1="215" x2="510" y2="215" stroke="#ef4444" stroke-width="2" />
                     <line x1="445" y1="170" x2="445" y2="235" stroke="#ef4444" stroke-width="1.5" />
                     <path d="M 453 210 L 445 215 L 453 220" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 502 210 L 510 215 L 502 220" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-c" x="477" y="200" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">C</text>
+                    <text id="diag-v-c" x="477" y="200" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">足</text>
 
                     <line x1="510" y1="185" x2="645" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 518 180 L 510 185 L 518 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 637 180 L 645 185 L 637 190" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-a" x="578" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+                    <text id="diag-v-a" x="578" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">柱寸</text>
 
                     <line x1="645" y1="185" x2="729" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 653 180 L 645 185 L 653 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 721 180 L 729 185 L 721 190" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-b" x="687" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+                    <text id="diag-v-b" x="687" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">芯-柱</text>
 
-                    <!-- 縦エルボ 切寸法線 (青: 2本の点線中央まで延長) -->
                     <line x1="418" y1="270" x2="729" y2="270" stroke="#5e5ce6" stroke-width="2.2" />
                     <path d="M 426 265 L 418 270 L 426 275" fill="none" stroke="#5e5ce6" stroke-width="2.2" />
                     <path d="M 721 265 L 729 270 L 721 275" fill="none" stroke="#5e5ce6" stroke-width="2.2" />
@@ -1061,14 +1095,13 @@
                     <line x1="96" y1="115" x2="180" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 104 110 L 96 115 L 104 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 172 110 L 180 115 L 172 120" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-h-b" x="138" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+                    <text id="diag-h-b" x="138" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">芯-柱</text>
 
                     <line x1="180" y1="115" x2="310" y2="115" stroke="#ef4444" stroke-width="2" />
                     <path d="M 188 110 L 180 115 L 188 120" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 302 110 L 310 115 L 302 120" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-h-a" x="245" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+                    <text id="diag-h-a" x="245" y="138" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">柱寸</text>
 
-                    <!-- 横エルボ 切寸法線 (緑 反転) -->
                     <line x1="96" y1="190" x2="245" y2="190" stroke="#32d74b" stroke-width="2.2" />
                     <path d="M 104 185 L 96 190 L 104 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
                     <path d="M 237 185 L 245 190 L 237 195" fill="none" stroke="#32d74b" stroke-width="2.2" />
@@ -1094,25 +1127,24 @@
                     <line x1="565" y1="65" x2="565" y2="155" stroke="#ef4444" stroke-width="2" />
                     <path d="M 560 73 L 565 65 L 570 73" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 560 147 L 565 155 L 570 147" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-d" x="548" y="115" fill="#ef4444" font-size="18" font-weight="bold">D</text>
+                    <text id="diag-v-d" x="548" y="115" fill="#ef4444" font-size="18" font-weight="bold">40</text>
 
                     <line x1="526" y1="185" x2="610" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 534 180 L 526 185 L 534 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 602 180 L 610 185 L 602 190" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-b" x="568" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+                    <text id="diag-v-b" x="568" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">芯-柱</text>
 
                     <line x1="610" y1="185" x2="745" y2="185" stroke="#ef4444" stroke-width="2" />
                     <path d="M 618 180 L 610 185 L 618 190" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 737 180 L 745 185 L 737 190" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-a" x="678" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+                    <text id="diag-v-a" x="678" y="207" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">柱寸</text>
 
                     <line x1="745" y1="215" x2="810" y2="215" stroke="#ef4444" stroke-width="2" />
                     <line x1="810" y1="170" x2="810" y2="235" stroke="#ef4444" stroke-width="1.5" />
                     <path d="M 753 210 L 745 215 L 753 220" fill="none" stroke="#ef4444" stroke-width="2" />
                     <path d="M 802 210 L 810 215 L 802 220" fill="none" stroke="#ef4444" stroke-width="2" />
-                    <text id="diag-v-c" x="777" y="200" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">C</text>
+                    <text id="diag-v-c" x="777" y="200" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">足</text>
 
-                    <!-- 縦エルボ 切寸法線 (青 反転: 2本の点線中央まで延長) -->
                     <line x1="526" y1="270" x2="838" y2="270" stroke="#5e5ce6" stroke-width="2.2" />
                     <path d="M 534 265 L 526 270 L 534 275" fill="none" stroke="#5e5ce6" stroke-width="2.2" />
                     <path d="M 830 265 L 838 270 L 830 275" fill="none" stroke="#5e5ce6" stroke-width="2.2" />
@@ -1126,35 +1158,29 @@
             const hCore = inputs['h-core'];
             const vCore = inputs['v-core'];
             const vLeg = inputs['v-leg'];
-            const dCore = inputs['d-core'];
 
             const numHExtra = parseFloat(hExtra);
-            const aVal = (!isNaN(numHExtra) && numHExtra >= 1) ? formatNum(numHExtra) : 'A';
+            const aVal = (!isNaN(numHExtra) && numHExtra >= 1) ? formatNum(numHExtra) : '柱寸';
             const diagHA = document.getElementById('diag-h-a');
             const diagVA = document.getElementById('diag-v-a');
             if (diagHA) diagHA.textContent = aVal;
             if (diagVA) diagVA.textContent = aVal;
 
             const numHCore = parseFloat(hCore);
-            const hbVal = (!isNaN(numHCore) && numHCore >= 1) ? formatNum(numHCore) : 'B';
+            const hbVal = (!isNaN(numHCore) && numHCore >= 1) ? formatNum(numHCore) : '芯-柱';
             const diagHB = document.getElementById('diag-h-b');
             if (diagHB) diagHB.textContent = hbVal;
 
             const numVCore = parseFloat(vCore);
-            const vbVal = (!isNaN(numVCore) && numVCore >= 1) ? formatNum(numVCore) : 'B';
+            const vbVal = (!isNaN(numVCore) && numVCore >= 1) ? formatNum(numVCore) : '芯-柱';
             const diagVB = document.getElementById('diag-v-b');
             if (diagVB) diagVB.textContent = vbVal;
 
             const diagVC = document.getElementById('diag-v-c');
             if (diagVC) {
                 const numVLeg = parseFloat(vLeg);
-                diagVC.textContent = (!isNaN(numVLeg) && numVLeg >= 1) ? formatNum(numVLeg) : 'C';
+                diagVC.textContent = (!isNaN(numVLeg) && numVLeg >= 1) ? formatNum(numVLeg) : '足';
             }
-
-            const numDCore = parseFloat(dCore);
-            const dVal = (!isNaN(numDCore) && numDCore >= 1) ? formatNum(numDCore) : 'D';
-            const diagVD = document.getElementById('diag-v-d');
-            if (diagVD) diagVD.textContent = dVal;
 
             const hResEl = document.getElementById('h-result-val');
             const vResEl = document.getElementById('v-result-val');
@@ -1175,6 +1201,8 @@
         }
 
         function openResetModal() {
+            const slotNumEl = document.getElementById('reset-slot-num');
+            if (slotNumEl) slotNumEl.innerText = currentSlot;
             const modal = document.getElementById('reset-modal');
             if (modal) modal.classList.add('active');
         }
@@ -1186,12 +1214,12 @@
 
         function executeResetInputs() {
             inputs['d-core'] = '';
-            inputs['d-extra'] = '';
+            inputs['d-extra'] = secondaryDefaults['d-extra'] || '0';
             inputs['v-core'] = '';
-            inputs['v-leg'] = '';
+            inputs['v-leg'] = secondaryDefaults['v-leg'] || '';
             inputs['v-plus'] = '';
             inputs['h-core'] = '';
-            inputs['h-extra'] = '';
+            inputs['h-extra'] = secondaryDefaults['h-extra'] || '';
 
             saveInputsToStorage();
 
@@ -1200,31 +1228,29 @@
             });
 
             calcDrain();
-            calcVertical();
             calcHorizontal();
+            calcVertical();
             updateDiagramValues();
             focusInput('v-core');
 
             closeResetModal();
-            showToast("すべての入力データをリセットしました");
+            showToast(`番号 ${currentSlot} の入力をリセットしました`);
         }
 
         function calcDrain() {
-            const size = document.getElementById('shared-size').value;
-            const sub = drainOffsets[size] !== undefined ? drainOffsets[size] : 15;
-
             const c = parseFloat(inputs['d-core']);
-            // 吊り金物は空欄なら標準値100を適用
-            const p = inputs['d-extra'] !== '' ? (parseFloat(inputs['d-extra']) || 0) : 100;
+            const p = parseFloat(inputs['d-extra']) || 0;
             const resEl = document.getElementById('d-result-val');
 
             if (isNaN(c) || c === 0) {
                 resEl.innerText = "---";
-                return;
+                return "";
             }
 
-            const res = Math.round((c + p - sub) * 10) / 10;
-            resEl.innerText = formatNum(res);
+            const res = Math.round(((c + p) - CONST_100.drainSub) * 10) / 10;
+            const str = formatNum(res);
+            resEl.innerText = str;
+            return str;
         }
 
         function updateFieldDisplay(id, val) {
@@ -1241,31 +1267,9 @@
             }
         }
 
-        function onSizeChange(sizeVal) {
-            const data = elbowData[sizeVal];
-            if (data) {
-                document.getElementById('shared-d-val').innerText = data.d;
-            }
-
-            try {
-                localStorage.setItem(SIZE_STORAGE_KEY, sizeVal);
-            } catch (e) {}
-
-            const sub = drainOffsets[sizeVal] !== undefined ? drainOffsets[sizeVal] : 15;
-            const descEl = document.getElementById('drain-formula-desc');
-            if (descEl) {
-                descEl.innerText = `ドレン下 + 吊り金物 - ${sub}`;
-            }
-
-            calcDrain();
-            calcVertical();
-            calcHorizontal();
-            updateDiagramValues();
-        }
-
         function calcVertical() {
-            const size = document.getElementById('shared-size').value;
-            const { d, e } = elbowData[size];
+            const d = CONST_100.d;
+            const e = CONST_100.e;
 
             const c = parseFloat(inputs['v-core']);
             const leg = parseFloat(inputs['v-leg']) || 0;
@@ -1287,7 +1291,7 @@
                 inputs['v-plus'] = '';
                 const plusEl = document.getElementById('v-plus');
                 if (plusEl) {
-                    plusEl.innerText = '---';
+                    plusEl.innerText = '柱寸+足';
                     plusEl.classList.add('placeholder');
                 }
             }
@@ -1296,22 +1300,24 @@
 
             if (isNaN(c) || c === 0) {
                 resEl.innerText = "---";
-                return;
+                return "";
             }
 
             let extraPlus = 0;
             if (autoPlus > 0) {
-                extraPlus = distXData[size] || 0;
+                extraPlus = CONST_100.distX;
             }
 
             const actualCore = c + autoPlus + extraPlus;
             const res = Math.round((actualCore - ((e * 2) - (d * 2))) * 10) / 10;
-            resEl.innerText = formatNum(res);
+            const str = formatNum(res);
+            resEl.innerText = str;
+            return str;
         }
 
         function calcHorizontal() {
-            const size = document.getElementById('shared-size').value;
-            const { d, e } = elbowData[size];
+            const d = CONST_100.d;
+            const e = CONST_100.e;
 
             const c = parseFloat(inputs['h-core']);
             const p = parseFloat(inputs['h-extra']) || 0;
@@ -1319,134 +1325,112 @@
 
             if (isNaN(c) || c === 0) {
                 resEl.innerText = "---";
-                return;
+                return "";
             }
 
             const actualCore = c + (p / 2);
             const res = Math.round((actualCore - ((e * 2) - (d * 2))) * 10) / 10;
-            resEl.innerText = formatNum(res);
+            const str = formatNum(res);
+            resEl.innerText = str;
+            return str;
         }
 
-        let editingHistoryId = null;
+        function saveAllRecords() {
+            const drainRes = calcDrain();
+            const vertRes = calcVertical();
+            const horizRes = calcHorizontal();
 
-        function getNextSequenceNumber(type) {
-            const sameTypeItems = histories.filter(h => h.type === type);
-            let maxNo = 0;
-            sameTypeItems.forEach(item => {
-                const parsed = parseInt(item.customNo, 10);
-                if (!isNaN(parsed) && parsed > maxNo) {
-                    maxNo = parsed;
+            const cDrain = inputs['d-core'];
+            const cVert = inputs['v-core'];
+            const cHoriz = inputs['h-core'];
+
+            const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const newRecords = [
+                {
+                    id: Date.now() + 1,
+                    type: 'drain',
+                    typeLabel: 'ドレン下',
+                    slot: String(currentSlot),
+                    desc: (cDrain && cDrain !== '0') ? `ドレン下:${formatNum(cDrain)}` : 'ドレン下:',
+                    result: (cDrain && cDrain !== '0') ? drainRes : '',
+                    time: nowTime,
+                    locked: false
+                },
+                {
+                    id: Date.now() + 2,
+                    type: 'vertical',
+                    typeLabel: '縦エルボ',
+                    slot: String(currentSlot),
+                    desc: (cVert && cVert !== '0') ? `芯-柱:${formatNum(cVert)}` : '芯-柱:',
+                    result: (cVert && cVert !== '0') ? vertRes : '',
+                    time: nowTime,
+                    locked: false
+                },
+                {
+                    id: Date.now() + 3,
+                    type: 'horizontal',
+                    typeLabel: '横エルボ',
+                    slot: String(currentSlot),
+                    desc: (cHoriz && cHoriz !== '0') ? `芯-柱:${formatNum(cHoriz)}` : '芯-柱:',
+                    result: (cHoriz && cHoriz !== '0') ? horizRes : '',
+                    time: nowTime,
+                    locked: false
                 }
-            });
-            return maxNo > 0 ? maxNo + 1 : sameTypeItems.length + 1;
-        }
+            ];
 
-        function openNumberEditModal(id) {
-            const record = histories.find(x => x.id === id);
-            if (!record) return;
+            histories.unshift(...newRecords);
 
-            editingHistoryId = id;
-            const titleEl = document.getElementById('edit-no-title');
-            const inputEl = document.getElementById('edit-no-input');
-            const modal = document.getElementById('number-edit-modal');
-
-            if (titleEl) titleEl.innerText = `${record.typeLabel} の番号を変更`;
-            if (inputEl) {
-                inputEl.value = record.customNo || '';
-                setTimeout(() => inputEl.focus(), 100);
+            while (histories.length > 50) {
+                const unlockedIdx = histories.map(h => h.locked).lastIndexOf(false);
+                if (unlockedIdx !== -1) {
+                    histories.splice(unlockedIdx, 1);
+                } else {
+                    break;
+                }
             }
-            if (modal) modal.classList.add('active');
-        }
 
-        function closeNumberEditModal() {
-            editingHistoryId = null;
-            const modal = document.getElementById('number-edit-modal');
-            if (modal) modal.classList.remove('active');
-        }
-
-        function executeSaveNumber() {
-            if (!editingHistoryId) return;
-            const inputEl = document.getElementById('edit-no-input');
-            const newNo = inputEl ? inputEl.value.trim() : '';
-
-            const record = histories.find(x => x.id === editingHistoryId);
-            if (record) {
-                record.customNo = newNo || '1';
-                saveToStorage();
-                renderHistories();
-                showToast(`番号を「No. ${record.customNo}」に変更しました`);
-            }
-            closeNumberEditModal();
+            saveToStorage();
+            renderHistories();
+            showToast(`番号 ${currentSlot} を全保存しました`);
+            isOverwriteMode = true;
         }
 
         function saveHistoryRecord(type) {
-            const size = document.getElementById('shared-size').value;
-            let record = null;
-            const seqNo = getNextSequenceNumber(type);
+            let label = '';
+            let mainVal = '';
+            let res = '';
 
             if (type === 'drain') {
-                const res = document.getElementById('d-result-val').innerText;
-                const c = inputs['d-core'];
-                if (res === "---" || !c) {
-                    showToast("ドレン下の数値を入力してください");
-                    return;
-                }
-                const p = inputs['d-extra'] !== '' ? inputs['d-extra'] : '100';
-                const sub = drainOffsets[size] || 15;
-                record = {
-                    id: Date.now(),
-                    type: 'drain',
-                    typeLabel: 'ドレン下',
-                    customNo: String(seqNo),
-                    size: size,
-                    desc: `ドレン下:${formatNum(c)} (+吊り金物:${formatNum(p)}) - ${sub}`,
-                    result: res,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    locked: false
-                };
+                label = 'ドレン下';
+                res = calcDrain();
+                mainVal = inputs['d-core'];
             } else if (type === 'vertical') {
-                const res = document.getElementById('v-result-val').innerText;
-                const c = inputs['v-core'];
-                if (res === "---" || !c) {
-                    showToast("縦エルボの数値を入力してください");
-                    return;
-                }
-                const autoPlus = inputs['v-plus'];
-                const leg = inputs['v-leg'];
-                record = {
-                    id: Date.now(),
-                    type: 'vertical',
-                    typeLabel: '縦エルボ',
-                    customNo: String(seqNo),
-                    size: size,
-                    desc: `芯-柱:${formatNum(c)}${autoPlus ? ` (柱寸+足:${formatNum(autoPlus)}${leg ? ` [足:${formatNum(leg)}]` : ''})` : ''}`,
-                    result: res,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    locked: false
-                };
+                label = '縦エルボ';
+                res = calcVertical();
+                mainVal = inputs['v-core'];
             } else {
-                const res = document.getElementById('h-result-val').innerText;
-                const c = inputs['h-core'];
-                if (res === "---" || !c) {
-                    showToast("横エルボの数値を入力してください");
-                    return;
-                }
-                const p = inputs['h-extra'];
-                record = {
-                    id: Date.now(),
-                    type: 'horizontal',
-                    typeLabel: '横エルボ',
-                    customNo: String(seqNo),
-                    size: size,
-                    desc: `芯-柱:${formatNum(c)}${p ? ` (+柱:${formatNum(p)}/2)` : ''}`,
-                    result: res,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    locked: false
-                };
+                label = '横エルボ';
+                res = calcHorizontal();
+                mainVal = inputs['h-core'];
             }
 
+            const hasVal = mainVal && mainVal !== '0';
+            const descStr = hasVal ? `${type === 'drain' ? 'ドレン下' : '芯-柱'}:${formatNum(mainVal)}` : `${type === 'drain' ? 'ドレン下' : '芯-柱'}:`;
+
+            const record = {
+                id: Date.now(),
+                type: type,
+                typeLabel: label,
+                slot: String(currentSlot),
+                desc: descStr,
+                result: hasVal ? res : '',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                locked: false
+            };
+
             histories.unshift(record);
-            
+
             if (histories.length > 50) {
                 const unlockedIdx = histories.map(h => h.locked).lastIndexOf(false);
                 if (unlockedIdx !== -1) histories.splice(unlockedIdx, 1);
@@ -1454,7 +1438,7 @@
 
             saveToStorage();
             renderHistories();
-            showToast(`${record.typeLabel} No.${record.customNo} を保存しました`);
+            showToast(`${label} [番号 ${currentSlot}] を保存しました`);
             isOverwriteMode = true;
         }
 
@@ -1489,9 +1473,7 @@
         function saveToStorage() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(histories));
-            } catch (e) {
-                console.warn('履歴保存エラー:', e);
-            }
+            } catch (e) {}
         }
 
         function renderHistories() {
@@ -1510,7 +1492,11 @@
                 return;
             }
 
-            container.innerHTML = histories.map(h => `
+            container.innerHTML = histories.map(h => {
+                const slotNum = h.slot || h.customNo || '1';
+                const cleanDesc = (h.desc || '').replace(/\s*\([^)]*\)/g, '');
+
+                return `
                 <div class="history-item ${h.locked ? 'is-locked' : ''}">
                     <div class="flex items-center gap-2.5">
                         <button onclick="toggleLock(${h.id})" class="p-1 rounded text-zinc-500 hover:text-amber-500">
@@ -1522,21 +1508,17 @@
                         <div>
                             <div class="flex items-center gap-2 mb-0.5">
                                 <span class="badge-type ${h.type}">${h.typeLabel}</span>
-                                <button class="badge-no" onclick="openNumberEditModal(${h.id})" title="タップして番号を変更">
-                                    <span>No. ${h.customNo || '1'}</span>
-                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                </button>
-                                <span class="text-[12px] font-bold text-zinc-300">呼び径 ${h.size}</span>
-                                <span class="text-[12px] text-zinc-500">${h.time || ''}</span>
+                                <span class="text-orange-500 font-extrabold text-[15px] px-1">${slotNum}</span>
+                                <span class="text-[12px] font-bold text-zinc-300">${cleanDesc}</span>
+                                <span class="text-[11px] text-zinc-500">${h.time || ''}</span>
                             </div>
-                            <div class="text-[12px] text-zinc-400 font-medium">${h.desc}</div>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-3">
                         <div class="text-right cursor-pointer" onclick="copyRaw('${h.result}')">
-                            <span class="text-lg font-extrabold text-white">${h.result}</span>
-                            <span class="text-[12px] text-zinc-400 font-bold ml-0.5">mm</span>
+                            <span class="text-lg font-extrabold text-white">${h.result || ''}</span>
+                            ${h.result ? '<span class="text-[12px] text-zinc-400 font-bold ml-0.5">mm</span>' : ''}
                         </div>
                         ${!h.locked ? `
                         <button onclick="deleteHistory(${h.id})" class="p-1 text-zinc-500 hover:text-red-400">
@@ -1545,7 +1527,8 @@
                         ` : '<div class="w-[24px]"></div>'}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function copyResult(id) {
@@ -1588,7 +1571,7 @@
                 badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span><span>オンライン</span>';
             } else {
                 badge.className = 'status-badge offline';
-                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span><span>オフライン (保存済)</span>';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span><span>オフライン</span>';
             }
         }
 
@@ -1596,48 +1579,20 @@
         window.addEventListener('offline', updateNetworkStatus);
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedSize = localStorage.getItem(SIZE_STORAGE_KEY);
-            if (savedSize && elbowData[savedSize]) {
-                const selectEl = document.getElementById('shared-size');
-                if (selectEl) selectEl.value = savedSize;
-            }
-
-            const counts = { drain: 0, vertical: 0, horizontal: 0 };
-            [...histories].reverse().forEach(item => {
-                if (counts[item.type] !== undefined) {
-                    counts[item.type]++;
-                    if (!item.customNo) {
-                        item.customNo = String(counts[item.type]);
-                    }
-                }
-            });
-            saveToStorage();
+            initSlotSelector();
 
             Object.keys(inputs).forEach(key => {
                 updateFieldDisplay(key, inputs[key]);
             });
 
             renderDiagram();
-
-            const sharedSizeEl = document.getElementById('shared-size');
-            if (sharedSizeEl) {
-                onSizeChange(sharedSizeEl.value);
-            }
+            calcDrain();
+            calcHorizontal();
+            calcVertical();
             renderHistories();
             updateDiagramValues();
             updateNetworkStatus();
         });
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then((registration) => {
-                    console.log('ServiceWorker registration successful:', registration.scope);
-                }).catch((err) => {
-                    console.error('ServiceWorker registration failed:', err);
-                });
-            });
-        }
     </script>
 </body>
 </html>

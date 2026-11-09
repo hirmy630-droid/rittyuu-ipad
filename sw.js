@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tachu-elbow-pwa-v20260929-09';
+const CACHE_NAME = 'kawaguchi-ipad-pwa-20261110-v1';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -27,77 +27,28 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
-function isSameOrigin(request) {
-  return new URL(request.url).origin === self.location.origin;
-}
-
-function isNavigationRequest(request) {
-  return request.mode === 'navigate';
-}
-
-function isCriticalAsset(request) {
-  const url = new URL(request.url);
-  return isSameOrigin(request) && (
-    url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/manifest.json') ||
-    url.pathname.endsWith('/sw.js')
-  );
-}
-
-function isStaticAsset(request) {
-  const url = new URL(request.url);
-  return isSameOrigin(request) && /\.(?:png|jpg|jpeg|webp|svg|gif|ico)$/.test(url.pathname);
-}
-
-async function networkFirst(request, fallbackPath = './index.html') {
-  const cache = await caches.open(CACHE_NAME);
-  try {
-    const response = await fetch(request, { cache: 'no-store' });
-    if (response && response.ok) {
-      cache.put(request, response.clone()).catch(() => {});
-    }
-    return response;
-  } catch (error) {
-    const cached = await cache.match(request);
-    if (cached) return cached;
-    return cache.match(fallbackPath);
-  }
-}
-
-async function cacheFirst(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
-  if (cached) return cached;
-  const response = await fetch(request);
-  if (response && response.ok) {
-    cache.put(request, response.clone()).catch(() => {});
-  }
-  return response;
-}
-
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
+  if (new URL(request.url).origin !== self.location.origin) return;
 
-  if (!isSameOrigin(request)) {
-    return;
-  }
-
-  if (isNavigationRequest(request) || isCriticalAsset(request)) {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-
-  if (isStaticAsset(request)) {
-    event.respondWith(cacheFirst(request));
-    return;
-  }
-
-  event.respondWith(networkFirst(request));
+  event.respondWith((async () => {
+    try {
+      const response = await fetch(request, { cache: 'no-store' });
+      if (response && response.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(request, response.clone());
+      }
+      return response;
+    } catch (err) {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await cache.match(request);
+      if (cached) return cached;
+      if (request.mode === 'navigate') {
+        const fallback = await cache.match('./index.html');
+        if (fallback) return fallback;
+      }
+      return Response.error();
+    }
+  })());
 });
